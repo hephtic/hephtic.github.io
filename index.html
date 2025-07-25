@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home - My Website</title>
+  <link rel="stylesheet" href="https://latex.vercel.app/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  
+  <header>
+    <h1>Nicholas Tan</h1>
+    <div class="contact-links">
+      <a href="mailto:nicholas.tan.cky@gmail.com"><i class="fas fa-envelope"></i> Email</a>|
+      <a href="https://www.linkedin.com/in/nicholas-tan-700013326" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>|
+      <a href="https://github.com/hephtic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+    </div>
+    
+    <button id="theme-toggle" aria-label="Toggle Dark Mode">
+      <i id="theme-icon" class="fas fa-moon"></i>
+    </button>  
+    <button id="toggle-view">Switch View</button>
+  </header>
+  
+  <main>
+    <div id="graph-view"></div>
+    <div id="list-view" style="display: none;"></div>
+    
+    <h2>Abstract</h2>
+    <p>This is my personal site.</p>
+
+    <h2>Projects</h2>
+    <p>These are some of my projects.</p>
+  </main>
+
+  <style>
+    body {
+      background: #fff;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    nav, .contact-links {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    nav a, .contact-links a {
+      color: #004080;
+    }
+
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.2em;
+      margin-top: 2rem;
+    }
+    
+    .contact-links i {
+      margin-right: 4px;
+    }
+    .contact-links a {
+      margin-right: 12px;
+      text-decoration: none;
+    }
+    
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --link-color: #004080;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    a {
+      color: var(--link-color);
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      --bg-color: #111111;
+      --text-color: #f0f0f0;
+      --link-color: #79b8ff;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 45px;
+      height: 40px;
+      padding: 0.4rem 0.8rem;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: transparent;
+      border: 2px solid var(--link-color);
+      border-radius: 8px;
+      color: var(--link-color);
+      transition: background-color 0.2s, color 0.2s;
+      z-index: 1000;
+    }
+
+    #theme-toggle:hover {
+      background-color: var(--link-color);
+      color: var(--bg-color);
+    }
+    
+    #toggle-view {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 5.5rem;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      background-color: transparent;
+      border: 2px solid var(--link-color);
+      border-radius: 8px;
+      color: var(--link-color);
+    }
+  </style>
+  
+  <script src="script.js"></script>
+</body>
+</html>
