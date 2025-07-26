@@ -1,8 +1,26 @@
 document.addEventListener("DOMContentLoaded", function() {
   // Initialize particles
   if (typeof particlesJS !== 'undefined') {
-    particlesJS.load('particles-js', 'particles.json', function() {
-      console.log('Particles loaded.');
+    particlesJS('particles-js', {
+      "particles": {
+        "number": { "value": 60 },
+        "color": { "value": "#58a6ff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.3 },
+        "size": { "value": 2 },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#58a6ff",
+          "opacity": 0.2,
+          "width": 1
+        },
+        "move": { "enable": true, "speed": 0.7 }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": false} }
+      }
     });
   }
 
@@ -38,3 +56,9 @@ document.addEventListener("DOMContentLoaded", function() {
     l.style.display = l.style.display === "none" ? "block" : "none";
   });
 });
+
+fetch('sidebar.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('sidebar-container').innerHTML = data;
+  });

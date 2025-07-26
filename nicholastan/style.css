@@ -1,0 +1,250 @@
+/* filepath: c:\Users\nicho\OneDrive\Documents\GitHub\nicholastan\nicholastan\style.css */
+
+/* Base styles */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --link-color: #004080;
+  --accent-color: #000000;
+
+  --sidebar-bg: #f0f0f0;    /* light gray */
+  --sidebar-text: #111111;  /* dark text */
+
+  --hover-border: #000000;
+  --hover-gradient: linear-gradient(90deg, rgba(0,0,0,0.05), transparent);
+}
+
+.dark {
+  --bg-color: #111111;
+  --text-color: #f0f0f0;
+  --link-color: #79b8ff;
+  --accent-color: #f0f0f0;
+
+  --sidebar-bg: #2b2b2b;
+  --sidebar-text: #f0f0f0;
+
+  --hover-border: #ffffff;
+  --hover-gradient: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
+}
+
+/* Layout */
+body {
+  display: flex;
+  justify-content: center;    /* horizontal centering */
+  align-items: flex-start;    /* keeps content at the top */
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@keyframes fadeFloatIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#particles-js {
+  position: fixed;
+  will-change: transform;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  animation: fadeFloatIn 1.5s ease-out;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header styles */
+header h1 {
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 0 rem;
+  color: var(--accent-color);
+  position: relative;
+}
+
+.contact-links {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.contact-links i {
+  margin-right: 4px;
+}
+
+.contact-links a {
+  margin: 0 12px;
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+/* Content styles */
+h2 {
+  padding-bottom: 0.2em;
+  margin-top: 1rem;
+  color: var(--accent-color);
+}
+
+/* Button styles */
+#theme-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 45px;
+  height: 45px;
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid var(--link-color);
+  border-radius: 8px;
+  color: var(--link-color);
+  transition: background-color 0.2s, color 0.2s;
+  z-index: 1000;
+}
+
+#theme-toggle:hover {
+  background-color: var(--link-color);
+  color: var(--bg-color);
+}
+
+#toggle-view {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 5.5rem;
+  width: 110px;       
+  height: 45px;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid var(--link-color);
+  border-radius: 8px;
+  color: var(--link-color);
+  transition: background-color 0.2s, color 0.2s;
+  z-index: 1000;
+}
+
+#toggle-view:hover {
+  background-color: var(--link-color);
+  color: var(--bg-color);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 55px;
+  background-color: var(--sidebar-bg);
+  transition: width 0.3s ease 0.05s;
+  overflow-x: hidden;
+  z-index: 999;
+  padding-top: 2rem;
+}
+
+.sidebar.expanded {
+  width: 180px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 1.5rem 0;
+}
+
+.sidebar a {
+  color: var(--sidebar-text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+  background: var(--hover-gradient);
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  border-left: 3px solid var(--hover-border);
+}
+
+.sidebar-hover-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px; /* wider than sidebar */
+  height: 100vh;
+  z-index: 998;
+}
+
+.sidebar i {
+  font-size: 1.2rem;
+  width: 20px;
+}
+
+.sidebar span {
+  margin-left: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.05s;
+}
+
+.sidebar.expanded span {
+  opacity: 1;
+}
+
+.sidebar.closing {
+  transition: width 0.3s ease;
+  width: 60px; /* collapsed width */
+}
+.sidebar.closing span {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Immediate pre-expanded entry (no flash) */
+.sidebar-preexpanded .sidebar {
+  width: 180px;
+}
+.sidebar-preexpanded .sidebar span {
+  opacity: 1;
+}
+
+/* Fallback closing animation */
+.sidebar.fallback-close {
+  transition: width 0.3s ease;
+  width: 55px;
+}
+.sidebar.fallback-close span {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar li:hover ~ .indicator {
+  top: calc(var(--i) * 60px + 2rem);
+}
