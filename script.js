@@ -174,9 +174,9 @@ function initGraph() {
   // Create nodes
   const nodes = new vis.DataSet([
     { id: 1, label: "Income \nFactors", description: "Investigates gender-based wage disparities using regression and machine learning to analyze explained and unexplained coefficients of factors.", url: "https://github.com/hephtic/usa_income" },
-    { id: 2, label: "Unemploy\n-ment COVID \nRecovery", description: "Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US." },
-    { id: 3, label: "Sticky-ness \nof Inflation", description: "Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data." },
-    { id: 4, label: "Evolutionary \nGame Theory", description: "Simulated evolutionary finite public goods game to test varying charaterstics of players." }
+    { id: 2, label: "Unemploy\n-ment COVID \nRecovery", description: "Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US.", url: "https://github.com/hephtic/unemployment-education-recovery-analysis" },
+    { id: 3, label: "Sticky-ness \nof Inflation", description: "Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data.", url: "https://github.com/hephtic/sticky-analysis" },
+    { id: 4, label: "Evolutionary \nGame Theory", description: "Simulated evolutionary finite public goods game to test varying charaterstics of players.", url: "https://github.com/hephtic/game_theory" }
   ]);
 
   // Create edges
