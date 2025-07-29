@@ -208,20 +208,55 @@ function initGraph() {
 
   // Create nodes
   const nodes = new vis.DataSet([
-    { id: 1, label: "Income \nFactors", description: "Investigates gender-based wage disparities using regression and machine learning to analyze explained and unexplained coefficients of factors.", url: "https://github.com/hephtic/usa_income" },
-    { id: 2, label: "Unemploy\n-ment COVID \nRecovery", description: "Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US.", url: "https://github.com/hephtic/unemployment-education-recovery-analysis" },
-    { id: 3, label: "Sticky-ness \nof Inflation", description: "Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data.", url: "https://github.com/hephtic/sticky-analysis" },
-    { id: 4, label: "Evolutionary \nGame Theory", description: "Simulated evolutionary finite public goods game to test varying charaterstics of players.", url: "https://github.com/hephtic/game_theory" }
-  ]);
+  {
+    id: 1,
+    label: "Polymarket \nData Analysis",
+    description: "Scraper and analysis toolkit for Polymarket trade, comment, and price data. Enables large-scale prediction market research.",
+    url: "https://github.com/hephtic/blank"
+  },
+  {
+    id: 2,
+    label: "Income \nFactors",
+    description: "Analyzes gender wage gaps using regression, decomposition, and machine learning on IPUMS labor data.",
+    url: "https://github.com/hephtic/usa_income"
+  },
+  {
+    id: 3,
+    label: "Unemployment \nRecovery",
+    description: "Quantile regressions explore the role of education in U.S. county-level unemployment recovery after COVID.",
+    url: "https://github.com/hephtic/unemployment-education-recovery-analysis"
+  },
+  {
+    id: 4,
+    label: "Sticky \nInflation",
+    description: "Decomposes CPI data to analyze sticky inflation and constructs a housing inflation tracker using Zillow data.",
+    url: "https://github.com/hephtic/sticky-analysis"
+  },
+  {
+    id: 5,
+    label: "Game Theory \nSimulation",
+    description: "Agent-based simulation of public goods games with punishment and mutation; identifies cooperation regimes.",
+    url: "https://github.com/hephtic/game_theory"
+  }
+]);
 
   // Create edges
   const edges = new vis.DataSet([
-    { id: 1, from: 1, to: 2 },
-    { id: 2, from: 2, to: 3 },
-    { id: 3, from: 3, to: 1 },
-    { id: 4, from: 3, to: 4 },
+  // Data-heavy and API-focused connection
+  { id: 1, from: 1, to: 2 }, // Polymarket ↔ Income Factors (both use large datasets, regression/ML)
 
-  ]);
+  // Policy & labor-related
+  { id: 2, from: 2, to: 3 }, // Income Factors ↔ Unemployment Recovery (labor economics)
+
+  // COVID recovery to inflation (macroeconomic link)
+  { id: 3, from: 3, to: 4 }, // Unemployment Recovery ↔ Sticky Inflation
+
+  // Theoretical/simulation link
+  { id: 4, from: 2, to: 5 }, // Income Factors ↔ Game Theory (behavioral/social science overlap)
+
+  // Optional: loop Polymarket into inflation (prediction market + macro)
+  { id: 5, from: 1, to: 4 }  // Polymarket ↔ Sticky Inflation
+]);
 
   // Network options
   const options = {

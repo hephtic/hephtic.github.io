@@ -46,44 +46,54 @@
     <div id="textView" class="view active">
       <div class="projects-grid">
         <div class="project-card">
+          <h3> <a href="blank" target="_blank">
+            1. Polymarket Data Analysis & Scraper Optimization Package
+          </a></h3>
+          <p>Topics: Prediction markets, on-chain data extraction, trading behavior</p>
+          <p>Methods: API scraping, data cleaning, performance optimization, modular package design, documentation</p>
+          <p>Tools: Python (requests, pandas, tqdm), SQLite, Polymarket API</p>
+          <p>Data: Polymarket event, comment, and trade data</p>
+          <p>Built modular scraping tools for collecting Polymarket prediction market data (trades, comments, prices). Streamlined and merged multiple packages into a single optimized interface for scalable analysis of trader behavior and market dynamics across thousands of markets. Used outputs to explore liquidity shifts and sentiment in U.S. election markets.</p>
+        </div>
+        <div class="project-card">
           <h3> <a href="https://github.com/hephtic/usa_income" target="_blank">
-            1. Income Factors Analysis </a>
+            2. Income Factors Analysis </a>
           </h3>
           <p>Topics: Gender wage gap, labor economics, income inequality</p>
           <p>Methods: Linear regression, Blinder-Oaxaca decomposition, Lasso Regression, Random Forest</p>
           <p>Tools: Python (pandas, scikit-learn, statsmodels), R (dplyr)</p>
           <p>Data: IPUMS labor survey (2009–2024)</p>
-          <p>Investigates gender-based wage disparities using regression and machine learning to analyze explained and unexplained coefficients of factors.</p>
+          <p>Analyzed gender-based wage disparities by separating explained and unexplained income gaps using statistical and machine learning models. Highlighted key predictors of wage differences and assessed their structural contributions over time.</p>
         </div>
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/unemployment-education-recovery-analysis" target="_blank">
-            2. Unemployment COVID Recovery Analysis
+            3. Unemployment COVID Recovery Analysis
           </a></h3>
           <p>Topics: Labor market recovery, education inequality, regional disparities, COVID-19 economic impact</p>
           <p>Methods: Linear regression (OLS), quantile regression (τ = 0.1–0.9), log transformations, bootstrapping, Breusch-Pagan test</p>
           <p>Tools: Python (pandas, statsmodels, matplotlib, seaborn)</p>
           <p>Data: USDA Economic Research Service – County-level education and unemployment rates (2019–2023)</p>          
-          <p>Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US.</p>
+          <p>Used quantile regressions to assess how education levels influenced post-COVID unemployment recovery across U.S. counties. Found stronger recovery patterns among higher-educated regions, particularly in lower quantiles of the unemployment distribution.</p>
         </div>
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/sticky-analysis" target="_blank">
-            3. Sticky-ness of Inflation Analysis
+            4. Sticky-ness of Inflation Analysis
           </a></h3>
           <p>Topics: Inflation stickiness, housing market dynamics, CPI decomposition, macroeconomic indicators</p>
           <p>Methods: Time series decomposition, seasonality testing, cross-basket regression analysis, correlation analysis</p>
           <p>Tools: Python (pandas, statsmodels, matplotlib)</p>
           <p>Data: Bureau of Labor Statistics CPI data, Zillow Housing Value Index (ZHVI)</p>          
-          <p>Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data.</p>
+          <p>Decomposed CPI time series to measure inflation stickiness across categories. Built a custom inflation tracker for the housing sector using Zillow data, showing housing as a persistent driver of sticky inflation.</p>
         </div>
         <div class="project-card">
           <h3><a href="https://github.com/hephtic/game_theory" target="_blank">
-            4. Evolutionary Game Theory Simulation
+            5. Evolutionary Game Theory Simulation
           </a></h3>
             <p>Topics: Evolutionary game theory, cooperation, public goods games, punishment, strategy dynamics</p>
             <p>Methods: Agent-based simulation, heatmap analysis, variance analysis, parameter sweeps</p>
             <p>Tools: Python (numpy, matplotlib, seaborn)</p>
             <p>Data: Synthetic data generated from simulation runs across parameter grids</p>
-            <p>Simulated a finite population public goods game with optional punishment and mutation. Explored how cooperation evolves under different evolutionary and institutional settings, including selection strength, mutation rate, and punishment cost. Identified regimes that promote stable cooperation.</p>
+            <p>Developed an agent-based model of a finite population public goods game with optional punishment and mutation. Explored how cooperation evolves under varying selection strengths and institutional rules, identifying regimes that foster stable cooperation.</p>
         </div>
     </div>
     </div>
@@ -95,7 +105,7 @@
 </div>
   </main>
 
- <footer style="height: 1150px; margin-top: 40px;"></footer>
+ <footer style="height: 1700px; margin-top: 40px;"></footer>
 
   <!-- Control buttons -->
   <button id="theme-toggle" aria-label="Toggle Dark Mode">
