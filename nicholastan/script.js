@@ -192,7 +192,7 @@ function initGraph() {
       forceAtlas2Based: {
         gravitationalConstant: -50, // Negative for repulsion
         centralGravity: 0.01,      // Very weak central pull
-        springLength: 200,         // Natural edge length
+        springLength: 120,         // Natural edge length
         springConstant: 0.08,      // Edge stiffness
         damping: 0.4,              // Higher = less bouncy (0.4 gives nice float)
         avoidOverlap: 0.2          // Prevents node overlap
@@ -252,100 +252,45 @@ function initGraph() {
    * @param  {Object}  opts                tuning params
    * @return {Function}                    stop function
    */
-  function startFloat(network, nodes, originalPositions, velocities, {
-    driftRadius    = 20,    // px max wander from home
-    frequency      = 0.0008,// how fast the sine waves oscillate
-    amplitude      = 4,     // how big the sine drift is
-    pullStrength   = 0.005, // spring-back force
-    friction       = 0.92   // velocity decay (0–1)
-  } = {}) {
-    let lastTs = 0;
-    let rafId;
+function addFloatingMotionToNodes(nodeIds, {
+  amplitude = 5,
+  speed = 0.002,
+} = {}) {
 
-    function step(ts) {
-      if (!lastTs) lastTs = ts;
-      const dt = ts - lastTs;
-      lastTs = ts;
+  const basePositions = network.getPositions(nodeIds);
+  const offsets = {};
 
-      // grab live positions map once per frame
-      const pos = network.getPositions();
+  nodeIds.forEach(id => {
+    offsets[id] = {
+      offsetX: Math.random() * 2 * Math.PI,
+      offsetY: Math.random() * 2 * Math.PI
+    };
+  });
 
-      nodes.getIds().forEach(id => {
-        const home = originalPositions[id];
-        const p    = pos[id];
-        const v    = velocities[id];
-        if (!home || !p || !v) return;
+  function animate(time) {
+    nodeIds.forEach(id => {
+      const base = basePositions[id];
+      const { offsetX, offsetY } = offsets[id];
 
-        // 1) Sine-based drift (smooth, non-random jitter)
-        const t = ts * frequency;
-        v.x += Math.sin(t + id) * amplitude * 0.001;
-        v.y += Math.cos(t + id) * amplitude * 0.001;
+      const dx = amplitude * Math.sin(offsetX + time * speed);
+      const dy = amplitude * Math.cos(offsetY + time * speed);
 
-        // 2) spring-pull back to home
-        v.x += (home.x - p.x) * pullStrength;
-        v.y += (home.y - p.y) * pullStrength;
+      network.moveNode(id, base.x + dx, base.y + dy);
+    });
 
-        // 3) friction
-        v.x *= friction;
-        v.y *= friction;
-
-        // 4) tentative new coords
-        let x = p.x + v.x;
-        let y = p.y + v.y;
-
-        // 5) clamp to driftRadius
-        const dx = x - home.x, dy = y - home.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist > driftRadius) {
-          const scale = driftRadius / dist;
-          x = home.x + dx * scale;
-          y = home.y + dy * scale;
-          // bleed off extra velocity
-          v.x *= 0.5;
-          v.y *= 0.5;
-        }
-
-        // 6) move it
-        network.moveNode(id, x, y);
-      });
-
-      rafId = requestAnimationFrame(step);
-    }
-
-    rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
+    requestAnimationFrame(animate);
   }
 
-  network.once('stabilizationIterationsDone', () => {
-    // 1. turn off built-in physics
-    network.setOptions({ physics: {
-      enabled: false }});
+  requestAnimationFrame(animate);
+}
 
-    // 2. grab settled positions
-    const originalPositions = network.getPositions();
-
-    // 3. init velocities now that we have real nodes
-    const velocities = {};
-    nodes.getIds().forEach(id => velocities[id] = { x: 0, y: 0 });
-
-    // 4. start continuous float
-    const stopFloat = startFloat(
-      network,
-      nodes,
-      originalPositions,
-      velocities,
-      {
-        driftRadius:  30,
-        frequency:    0.06,
-        amplitude:    6,
-        pullStrength: 0.007,
-        friction:     0.90
-      }
-    );
-
-    // 5. cleanup on destroy
-    network.on('destroy', stopFloat);
+network.once('stabilizationIterationsDone', () => {
+  const nodeIds = nodes.getIds();  // Just the IDs
+  addFloatingMotionToNodes(nodeIds, {
+    amplitude: 4,
+    speed: 0.0013
   });
+});
 
   // Store globally for theme updates
   window.graphNetwork = network;
@@ -368,12 +313,6 @@ function initGraph() {
     const nodeId = params.node;
     const node = nodes.get(nodeId);
     if (!node) return;
-
-    // Cancel any running animation for this node
-    if (animationFrames.has(nodeId)) {
-      clearTimeout(animationFrames.get(nodeId));
-      animationFrames.delete(nodeId);
-    }
 
     // Cancel any pending hide for description
     if (descHideTimeout) {
