@@ -25,18 +25,8 @@ This project is a personal website for Nicholas Tan, showcasing various sections
 - **Particle Background**: A visually appealing particle effect is present on all pages.
 - **Responsive Design**: The website is designed to be responsive and accessible on various devices.
 
-## Setup Instructions
-
-1. Clone the repository to your local machine.
-2. Open `index.html` in a web browser to view the homepage.
-3. Navigate through the sidebar to access different sections of the website.
-
 ## Future Improvements
 
 - Consider implementing a template engine for easier management of common elements across pages.
 - Add more content to the blog and projects sections.
 - Enhance the design with additional CSS styles and animations.
-
-## License
-
-This project is open-source and available for anyone to use and modify.
