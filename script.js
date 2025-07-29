@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
   if (typeof particlesJS !== 'undefined') {
     particlesJS('particles-js', {
       "particles": {
-        "number": { "value": 120 },
+        "number": { "value": 150 },
         "color": { "value": "#58a6ff" },
         "shape": { "type": "circle" },
-        "opacity": { "value": 0.3 },
-        "size": { "value": 2 },
+        "opacity": { "value": 0.4 },
+        "size": { "value": 1.5 },
         "line_linked": {
           "enable": true,
           "distance": 150,
@@ -116,6 +116,41 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("sidebarExpanded", "false");
     });
   }
+});
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const menu = document.getElementById("mobile-menu");
+  const toggleButton = document.getElementById("sidebar-toggle");
+
+  // Unified toggle function
+  const toggleMenu = () => {
+    menu.classList.toggle("hidden"); // For CSS that uses .hidden
+    menu.classList.toggle("show");   // For CSS that uses .show
+  };
+
+  // Toggle on button click
+  toggleButton.addEventListener("click", (event) => {
+    event.stopPropagation(); // Prevent document click handler from firing
+    toggleMenu();
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", (event) => {
+    if (!menu.contains(event.target) && !toggleButton.contains(event.target)) {
+      menu.classList.add("hidden");
+      menu.classList.remove("show");
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      menu.classList.add("hidden");
+      menu.classList.remove("show");
+    }
+  });
 });
 
 let toggleLocked = false;

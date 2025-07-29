@@ -36,7 +36,7 @@
 </nav><!-- Main Content -->
 <div class="container">
   <header>
-    <h1>My Projects</h1>
+    <h1>Projects</h1>
   </header>
 
   <main class="view-stack">
@@ -49,25 +49,41 @@
           <h3> <a href="https://github.com/hephtic/usa_income" target="_blank">
             1. Income Factors Analysis </a>
           </h3>
+          <p>Topics: Gender wage gap, labor economics, income inequality</p>
+          <p>Methods: Linear regression, Blinder-Oaxaca decomposition, Lasso Regression, Random Forest</p>
+          <p>Tools: Python (pandas, scikit-learn, statsmodels), R (dplyr)</p>
+          <p>Data: IPUMS labor survey (2009–2024)</p>
           <p>Investigates gender-based wage disparities using regression and machine learning to analyze explained and unexplained coefficients of factors.</p>
         </div>
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/unemployment-education-recovery-analysis" target="_blank">
             2. Unemployment COVID Recovery Analysis
           </a></h3>
+          <p>Topics: Labor market recovery, education inequality, regional disparities, COVID-19 economic impact</p>
+          <p>Methods: Linear regression (OLS), quantile regression (τ = 0.1–0.9), log transformations, bootstrapping, Breusch-Pagan test</p>
+          <p>Tools: Python (pandas, statsmodels, matplotlib, seaborn)</p>
+          <p>Data: USDA Economic Research Service – County-level education and unemployment rates (2019–2023)</p>          
           <p>Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US.</p>
         </div>
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/sticky-analysis" target="_blank">
             3. Sticky-ness of Inflation Analysis
           </a></h3>
+          <p>Topics: Inflation stickiness, housing market dynamics, CPI decomposition, macroeconomic indicators</p>
+          <p>Methods: Time series decomposition, seasonality testing, cross-basket regression analysis, correlation analysis</p>
+          <p>Tools: Python (pandas, statsmodels, matplotlib)</p>
+          <p>Data: Bureau of Labor Statistics CPI data, Zillow Housing Value Index (ZHVI)</p>          
           <p>Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data.</p>
         </div>
         <div class="project-card">
           <h3><a href="https://github.com/hephtic/game_theory" target="_blank">
             4. Evolutionary Game Theory Simulation
           </a></h3>
-          <p>Simulated evolutionary finite public goods game to test varying charaterstics of players.</p>
+            <p>Topics: Evolutionary game theory, cooperation, public goods games, punishment, strategy dynamics</p>
+            <p>Methods: Agent-based simulation, heatmap analysis, variance analysis, parameter sweeps</p>
+            <p>Tools: Python (numpy, matplotlib, seaborn)</p>
+            <p>Data: Synthetic data generated from simulation runs across parameter grids</p>
+            <p>Simulated a finite population public goods game with optional punishment and mutation. Explored how cooperation evolves under different evolutionary and institutional settings, including selection strength, mutation rate, and punishment cost. Identified regimes that promote stable cooperation.</p>
         </div>
     </div>
     </div>
@@ -75,9 +91,11 @@
     <!-- Graph View -->
     <div id="graphView" class="view">
       <div id="project-graph" style="width: 100%; height: 475px;"></div>
-      <div id="description-box" style="min-height:2em;text-align:center;margin-top:1em;color:var(--text-color);"></div>    </div>
-  </main>
+      <div id="description-box" style="min-height:2em;text-align:center;margin-top:1em;color:var(--text-color);"></div>    
 </div>
+  </main>
+
+ <footer style="height: 1150px; margin-top: 40px;"></footer>
 
   <!-- Control buttons -->
   <button id="theme-toggle" aria-label="Toggle Dark Mode">
@@ -86,6 +104,19 @@
     <button id="toggle-view">
       <i id="view-icon" class="fas fa-diagram-project"></i>
     </button>
+ <!-- Hamburger Button -->
+<button id="sidebar-toggle" aria-label="Toggle Sidebar">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="projects.html">Projects</a>
+  <a href="blog.html">Blog</a>
+  <a href="reading-list.html">Reading List</a>
+  <a href="about.html">About</a>
+</div>
     
   <!-- Scripts -->
   <script src="script.js"></script>
