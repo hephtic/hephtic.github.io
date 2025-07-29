@@ -1,6 +1,4 @@
-# README.md
-
-# Nicholas Tan - Personal Website
+# Personal Website
 
 ## Overview
 

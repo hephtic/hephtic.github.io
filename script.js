@@ -173,15 +173,19 @@ function initGraph() {
 
   // Create nodes
   const nodes = new vis.DataSet([
-    { id: 1, label: "Project 1 test\n testing", description: "Analyzes stock market trends using ML", url: "https://github.com/hephtic/usa_income" },
-    { id: 2, label: "Project 2", description: "Predicts unemployment using econometrics" },
-    { id: 3, label: "Project 3", description: "Builds tools for data visualization" }
+    { id: 1, label: "Income \nFactors", description: "Investigates gender-based wage disparities using regression and machine learning to analyze explained and unexplained coefficients of factors.", url: "https://github.com/hephtic/usa_income" },
+    { id: 2, label: "Unemploy\n-ment COVID \nRecovery", description: "Quantile regressions to analyze education’s role in unemployment recovery post-COVID at a county level across the US." },
+    { id: 3, label: "Sticky-ness \nof Inflation", description: "Time series analysis of varying CPI baskets; created shadow inflation tracker specifically for the housing market from Zillow data." },
+    { id: 4, label: "Evolutionary \nGame Theory", description: "Simulated evolutionary finite public goods game to test varying charaterstics of players." }
   ]);
 
   // Create edges
   const edges = new vis.DataSet([
     { id: 1, from: 1, to: 2 },
-    { id: 2, from: 2, to: 3 }
+    { id: 2, from: 2, to: 3 },
+    { id: 3, from: 3, to: 1 },
+    { id: 4, from: 3, to: 4 },
+
   ]);
 
   // Network options
@@ -221,7 +225,7 @@ function initGraph() {
       },
       font: {
         color: fontColor,
-        size: 16,
+        size: 14,
         face: 'Computer Modern Serif, Georgia, Cambria, Times New Roman, serif',
       },
       borderWidth: 2,
