@@ -47,13 +47,30 @@
       </header>
 
       <main>
-        <!-- Inserted simulation app (complete body contents from your second file) -->
+        <p style="text-indent: 20px;">
+  This simulation explores and visualizes <strong>Fractional Brownian Motion (FBM)</strong>, 
+  which shows how random walks behave when their steps or increments are 
+  <em>not</em> completely independent. FBM
+  has a “memory” controlled by the Hurst exponent, where 
+  high values produce smoother, more persistent paths, while low values 
+  cause more jagged, mean-reverting behavior.
+</p>
+  <p style="text-indent: 20px;">
+  FBM has been studied for applications such as modeling internet traffic or 
+  financial markets, but in finance it has a critical drawback: 
+  unlike <em>standard Brownian motion (BM)</em>, it can in theory permit certain “free profit” opportunities 
+  (arbitrage), which makes it less suitable for realistic market models. 
+  </p>
+  <p style="text-indent: 20px;">
+  Use the slider and inputs to compare FBM with standard BM. 
+  Change H and press <strong>Draw</strong>. Toggle the increments/ACF to inspect dependence. Reduce steps if cholesky becomes slow.</p>
+  <p style="text-indent: 20px;">Tip: use \( \leq 512 \) steps for fast draws. Cholesky is \( O(N^3) \).</p>
         <div class="fbm-sim">
           <div class="app card" id="app">
 
             <div class="controls">
               <div class="card">
-                <label>Hurst exponent H <span id="Hval" class="muted">0.75</span></label>
+                <label>Hurst exponent H=<span id="Hval" class="muted">0.75</span></label>
                 <div class="range">
                   <input id="H" type="range" min="0.1" max="0.9" step="0.01" value="0.75" style="width:120px">
                 </div>
@@ -80,7 +97,7 @@
               <div class="card">
                 <label>Show</label>
                 <div style="display:flex;gap:8px;align-items:center">
-                  <label style="font-size:13px"><input id="showInc" type="checkbox"> Increments plot</label>
+                  <label style="font-size:13px"><input id="showInc" type="checkbox"> Increments Plot</label>
                   <label style="font-size:13px"><input id="showACF" type="checkbox"> Increments ACF</label>
                 </div>
               </div>
@@ -91,22 +108,21 @@
               </div>
             </div>
             </div>
-
             <div class="layout">
               <div class="plots">
                 <div class="card">
                   <label>Paths (FBM = red, BM = blue)</label>
-                  <canvas id="pathCanvas" width="700" height="260"></canvas>
+                  <canvas id="pathCanvas" width="550" height="260"></canvas>
                 </div>
 
                 <div class="card" id="incCard" style="display:none">
                   <label>Increments (FBM vs BM)</label>
-                  <canvas id="incCanvas" width="700" height="140"></canvas>
+                  <canvas id="incCanvas" width="550" height="140"></canvas>
                 </div>
 
                 <div class="card" id="acfCard" style="display:none">
                   <label>Sample autocorrelation of increments (lag 0..50)</label>
-                  <canvas id="acfCanvas" width="700" height="140"></canvas>
+                  <canvas id="acfCanvas" width="550" height="140"></canvas>
                 </div>
 
               </div>
@@ -114,28 +130,28 @@
               <aside class="card small">
                 <h3 style="margin-top:0">Notes - what to look for</h3>
                 <ul>
-                  <li>Standard Brownian motion (H=0.5) has independent increments. When generated from the <em>same</em> base normals, its increments are raw normals.</li>
-                  <li>Fractional Brownian motion (H ≠ 0.5) mixes the base normals via the Cholesky factor of the covariance matrix. That mixing introduces persistent (H > 0.5) or anti-persistent (H < 0.5) correlations in the increments.</li>
+                  <li>Standard Brownian motion \( (H=0.5) \) has independent increments. When generated from the <em>same</em> base normals, its increments are raw normals.</li>
+                  <li>Fractional Brownian motion \( (H \neq 0.5) \) mixes the base normals via the Cholesky factor of the covariance matrix. That mixing introduces persistent \( (H > 0.5) \) or anti-persistent \( (H < 0.5) \) correlations in the increments.</li>
                   <li>Compare the increments plots and the sample autocorrelation below; FBM shows nonzero autocorrelation while BM's acf (after the same base normals) will look like white noise.</li>
                 </ul>
-                <h4>Controls</h4>
-                <p class="muted">Change H and press <strong>Draw</strong>. Toggle the increments/ACF to inspect dependence. Reduce steps if cholesky becomes slow.</p>
-                <hr>
+                
                 <h4>Technical details (brief)</h4>
                <p>
   We construct a covariance matrix
   \[
     \mathrm{Cov}(B_H(t_i), B_H(t_j)) = \frac{1}{2} \left( t_i^{2H} + t_j^{2H} - |t_i - t_j|^{2H} \right).
   \]
-  We perform Cholesky decomposition \( L \) and set the path as \( \text{path} = L \times Z \), where \( Z \) are i.i.d. standard normals from the seeded RNG.
+  </p>
+  <p style="text-indent: 20px;">
+  We perform Cholesky decomposition \( L \) and set the path as \( \text{path} = L \times Z \) where \( Z \) are i.i.d. standard normals from the seeded RNG.
   For fair comparison, Brownian motion uses the same \( Z \) sequence as its increments (cumulative sum).
 </p>
               </aside>
             </div>
 
-            <footer class="muted">Tip: use ≤512 steps for fast draws. Cholesky is O(N³).</footer>
+            <footer class="muted" style="text-indent: 20px;"></footer>
           </div>
-                  <p style="margin-top:18px">To explore more see <a href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion" target="_blank" style="color: blue;text-decoration:underline">link</a>.</p>
+                  <p style="text-indent: 20px;">To explore more see <a href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion" target="_blank" style="color: blue;text-decoration:underline">link</a>.</p>
 
         </div>
 

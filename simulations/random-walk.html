@@ -44,8 +44,13 @@
       </header>
       
       <main>
-        <p>In probability theory, a symmetric random walk is recurrent in 1D and 2D, as in it returns to the origin almost surely, given infinite time. In 3D (and in any higher dimensions), this random walk is transient, there's a nonzero chance it never returns. This simulation uses finite steps for computation purposes, so recurrence is not guaranteed, but you'll see strong differences in return behavior and convergence of probability as we simulate random walks in each of these dimensions.</p>
-      </main>
+<p style="text-indent: 20px;">
+  In a symmetric random walk, you take equal-sized steps in random directions. 
+  The surprising twist is how dimension changes the story: in 1D and 2D, you will almost certainly return to your starting point if you walk forever (recurrence).
+  In 3D and higher, there’s a real chance you’ll never come back as the path can drift away indefinitely (transience). </p>
+  <p style="text-indent: 20px;">
+  This simulation only uses a finite number of steps, so recurrence isn’t guaranteed, but you’ll still see how return probabilities behave differently across dimensions. 
+</p>      </main>
       <br>
 
       <div>
@@ -64,9 +69,9 @@
     <canvas id="returnChart" width="600" height="400"></canvas>
 
     </div>
-    <p> Notice how in 1D and 2D the return rates approach 1 (this is not fully convincing in the 2D case if we had infinite computing power it would be true), while the return rate in 3D seems to converge at around 0.34. This is the convergence of probabilities as we approach infinity supported by the recurrence and transience in these dimensions. </p>
+    <p style="text-indent: 20px;"> Notice how in 1D and 2D the return rates approach 1 (this is not fully convincing in the 2D case if we had infinite computing power it would be true), while the return rate in 3D seems to converge at around 0.34. This is the convergence of probabilities as we approach infinity supported by the recurrence and transience in these dimensions. </p>
     
-    <p> To see the rigorous mathematics behind this see <a href="https://www.statslab.cam.ac.uk/~james/Markov/s16.pdf" target = "_blank" style = "color: blue; text-decoration: underline;">link</a>.
+    <p style="text-indent: 20px;"> To see the rigorous mathematics behind this see <a href="https://www.statslab.cam.ac.uk/~james/Markov/s16.pdf" target = "_blank" style = "color: blue; text-decoration: underline;">link</a>.
  </p>
  <footer style="height: 20px; margin-top: 40px;"></footer>
  </div>

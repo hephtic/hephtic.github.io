@@ -361,9 +361,8 @@ h2 {
   background: var(--sidebar-bg);
   border: 2px solid var(--node-border);
   border-radius: 50%;
-  transition: transform 0.2s ease, border-color 0.2s color 0.2s ease, background 0.2s color 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease-in-out, background 0.2s ease-in-out;
   z-index: 10;
-
   animation: floatyMotion 12s ease-in-out infinite;
   will-change: transform;
 
@@ -376,12 +375,15 @@ h2 {
 
 .edge:hover {
   color: var(--textcolor);
+  transition: transform 0.2s ease-in-out;
 }
 
 #project-graph .vis-network .vis-node circle {
   transition: r 0.25s cubic-bezier(.4,2,.6,1);
+  background-color: var(--sidebar-bg);
   z-index: 10;
   cursor: pointer !important;
+  transition: background 0.2s ease-in-out;
 }
 
 #project-graph {
