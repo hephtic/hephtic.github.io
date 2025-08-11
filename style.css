@@ -15,6 +15,9 @@
 
   --border-color:  #cccccc; /* light border for elements */
   --thead-bg-color: #f9f9f9; /* light header background */
+
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 .dark {
@@ -31,6 +34,9 @@
 
   --border-color: #444444; /* dark border for elements */
   --thead-bg-color: #222222; /* dark header background */
+
+  --card-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+  --card-shadow-hover: 0 6px 18px rgba(255, 255, 255, 0.3);
 }
 
 /* Layout */
@@ -82,6 +88,10 @@ body {
   padding-top: 1rem;
   position: relative;
   z-index: 1;
+}
+
+a {
+  color: var(--link-color); 
 }
 
 /* Header styles */
@@ -180,7 +190,7 @@ h2 {
   height: 100vh;
   width: 55px;
   background-color: var(--sidebar-bg);
-  transition: width 0.3s ease 0.05s;
+  transition: width 0.3s ease 0.05s, background-color 0.2s, color 0.2s ease;
   overflow-x: hidden;
   z-index: 999;
   padding-top: 2rem;
@@ -207,7 +217,7 @@ h2 {
   align-items: center;
   padding: 0.5rem 1rem;
   white-space: nowrap;
-  transition: background 0.3s, color 0.3s;
+  transition: var(--sidebar-bg) 0.2s, color 0.2s ease
 }
 
 .sidebar a:hover {
@@ -233,9 +243,9 @@ h2 {
 .sidebar span {
   margin-left: 1rem;
   opacity: 0;
-  transition: opacity 0.3s ease 0.05s;
+  transition: opacity 0.3s ease;
+  color: var(--sidebar-text); /* explicitly set */
 }
-
 .sidebar.expanded span {
   opacity: 1;
 }
@@ -330,28 +340,28 @@ h2 {
   transition: opacity 0.3s;
   background: var(--sidebar-bg);
   color: var(--text-color);
-  border-radius: 8px;
-  margin-top: 20px;
+  border-radius: 4px;
   padding: 10px 16px;
   font-family: 'Computer Modern Serif', Georgia, Cambria, Times New Roman, serif;
   font-size: 14px;
-  max-width: 600px;
+  max-width: 650px;
   display: none;
+  box-shadow: var(--card-shadow);
 }
 
 .vis-network .vis-node:hover {
   cursor: pointer;
+  color: var(--textcolor);
   transition: all 1s ease-in-out;
 }
 
 .node {
   display: inline-block;
   padding: 10px 14px;
-  background: var(--bg-color);
-  border: 2px solid var(--node-border, black);
+  background: var(--sidebar-bg);
+  border: 2px solid var(--node-border);
   border-radius: 50%;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-  font-family: "Computer Modern Serif", Georgia, Cambria, Times, serif;
+  transition: transform 0.2s ease, border-color 0.2s color 0.2s ease, background 0.2s color 0.2s ease;
   z-index: 10;
 
   animation: floatyMotion 12s ease-in-out infinite;
@@ -362,6 +372,10 @@ h2 {
 .node:hover {
   border-color: var(--text-color);
   transition: transform 0.2s ease-in-out;
+}
+
+.edge:hover {
+  color: var(--textcolor);
 }
 
 #project-graph .vis-network .vis-node circle {
@@ -466,4 +480,212 @@ table.reading-list thead {
 #sidebar-toggle:hover {
   background-color: var(--link-color);
   color: var(--bg-color);
+}
+
+.simulation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.simulation-card {
+  background: var(--sidebar-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease, background 0.2s ease-in-out;
+}
+
+.simulation-card:hover,
+.simulation-card:focus {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-4px);
+  cursor: pointer;
+}
+
+.simulation-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.simulation-card p {
+  color: var(--text-color)
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.controls select,
+.controls button {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Container decides how big things can be */
+.visualization-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%; /* adjust to taste */
+}
+
+/* Canvas fills the container and is transparent */
+#walk-visualization {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 1px solid var(--border-color);
+  background: var(--sidebar-bg); /* ensure no CSS background */
+  transition: background 0.2s ease-in-out;
+}
+
+#drawCanvasWaves, #fourierCanvasWaves, #drawCanvasEpi, #epiCanvas {
+  border: 1px solid var(--border-color);
+  border-color: var(--border-color);
+  display: block;
+  background-color: var(--sidebar-bg);
+  margin: 10px auto;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+}
+
+#needleCanvas {
+  border: 1px solid var(--border-color);
+  border-color: var(--border-color);
+  display: block;
+  margin: 1rem auto;
+  background-color: var(--sidebar-bg);
+  transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+}
+
+#controls {
+  text-align: center;
+  font-family: 'Computer Modern Serif', serif;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+#stats {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: var(--text-color)
+}
+
+#chartContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+#controls button {
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  border: 1.5px solid var(--border-color);
+  padding: 0.5em 1.2em;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+.controls .card {
+  flex: 1 1 260px; /* cards will grow/shrink with minimum width */
+  box-sizing: border-box;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* space between label and input */
+  min-width: 140px;
+  max-width: 140px; /* optional max width */
+}
+
+.app.card {
+  max-width: 100%;        /* never wider than container */
+  box-sizing: border-box; /* include padding/border in width */
+  overflow-x: hidden;     /* hide any accidental horizontal scroll */
+  padding: 1rem;
+}
+
+.app.card .controls {
+  display: flex;
+  flex-wrap: wrap;        /* allow controls to wrap to next line */
+  gap: 2rem;              /* space between controls */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.app.card .controls .card {
+  flex: 1 1 140px;        /* grow/shrink, min width 200px */
+  min-width: 140px;       /* don't get too narrow */
+  box-sizing: border-box;
+}
+
+.app.card .controls .card input[type="range"] {
+  width: 100%;            /* full width inside its card */
+}
+
+.btn {
+  cursor: pointer;
+}
+
+/* Light theme input background */
+#seed, #steps {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark theme input background */
+html.dark #seed,
+html.dark #steps {
+  background-color: #2b2b2b;  /* dark grey */
+  color: #eee;
+  border: 1px solid #555;
+}
+
+/* Pointer cursor for buttons */
+#draw, #regen {
+  cursor: pointer;
+}
+
+/* Pointer cursor for checkboxes */
+#showInc, #showACF {
+  cursor: pointer;
+}
+
+/* Pointer cursor for slider input */
+#H {
+  cursor: pointer;
+}
+
+/* Pointer cursor for dropdown select */
+#scale {
+  cursor: pointer;
+}
+
+#termSlider {
+  cursor: pointer;
+}
+
+#dimension-select {
+  cursor: pointer;
+}
+
+#run-btn {
+  cursor: pointer;
 }

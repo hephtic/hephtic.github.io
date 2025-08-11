@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nicholas Tan - Home</title>
+  <title>Nicholas Tan - Simulations</title>
   <link rel="stylesheet" href="https://latex.vercel.app/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
@@ -20,7 +20,7 @@
 <body>
   <!-- Particles Background -->
   <div id="particles-js"></div>
-  
+
   <!-- Sidebar -->
 <div class="sidebar-hover-zone"></div> <!-- Optional hover buffer -->
 <nav class="sidebar expanded">
@@ -33,41 +33,61 @@
     <li><a href="about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
   </ul>
 </nav>
-  <!-- Main Content -->
-  <div class="container">
-    <header>
-      <h1>Nicholas Tan</h1>
-      <div class="contact-links">
-        <a href="mailto:nicholas.tan.cky@gmail.com"><i class="fas fa-envelope"></i> Email</a>
-        <a href="https://www.linkedin.com/in/nicholas-tan-700013326" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
-        <a href="https://github.com/hephtic" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-      </div>
-    </header>
-    
-    <main>
-      <div id="graph-view"></div>
-      <div id="list-view" style="display: none;"></div>
-      <h2>Welcome.</h2>
-      <p>This site serves as a space to document my work and interests at the intersection of mathematics,
-      economics, and data. You'll find personal projects, research explorations, and a curated reading record.</p>
 
-      <h2>Introduction.</h2>
-      <p>I'm a Math–Economics student at UC San Diego, especially interested in:</p>
-      <ul>
-        <li>Probabilistic and statistical models in finance and economics</li>
-        <li>Theoretical foundations in game theory, statistical inference, and probability theory</li>
-        <li>Anything related to analysis (math)</li>
-      </ul>
-    </main>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <header>
+        <h1>Simulations</h1>
+      </header>
+      <main>
+  <p>Explore some interesting mathematical simulations. Click a box to open the full simulation.</p>
+
+  <div class="simulation-grid">
+
+    <a href="simulations/random-walk.html" class="simulation-card">
+      <h2>Random Walk Recurrence</h2>
+      <p>Explore recurrence and transience of random walks in 1D, 2D, and 3D.</p>
+    </a>
+
+    <a href="simulations/fourier-series.html" class="simulation-card">
+      <h2>Fourier Series Visualization</h2>
+      <p>Visualize how Fourier series approximate functions with partial sums.</p>
+    </a>
+
+    <a href="simulations/buffons-needle.html" class="simulation-card">
+      <h2>Buffon's Needle Simulation</h2>
+      <p>Simulate needle drops to estimate 𝜋 with Monte Carlo sampling.</p>
+    </a>
+    
+    <a href="simulations/fractional-brownian-motion.html" class="simulation-card">
+      <h2>Fractional Brownian Motion</h2>
+      <p>Simulate fBM with varying Hurst coefficients.</p>
+    </a>
+
+    <!--
+    <a href="another-simulation.html" class="simulation-card">
+      <h2>Another Simulation</h2>
+      <p>A brief description of this simulation project.</p>
+    </a>
+    -->
+    
+    <!-- Add more simulation cards here -->
+
   </div>
 
-  <!-- Control buttons -->
+</main>
+ <footer style="height: 20px; margin-top: 40px;"></footer>
+
+        </div>
+  </div>
+
+  <!-- Control buttons -->  
   <button id="theme-toggle" aria-label="Toggle Dark Mode">
     <i id="theme-icon" class="fas fa-moon"></i>
-  </button>  
-  
+  </button>
  <!-- Hamburger Button -->
-<button id="sidebar-toggle" aria-label="Toggle Sidebar">
+<button id="sidebar-toggle" aria-label="Toggle Sidebar" onclick="toggleMobileMenu()">
   <i class="fas fa-bars"></i>
 </button>
 
@@ -75,11 +95,19 @@
 <div id="mobile-menu" class="mobile-menu">
   <a href="index.html">Home</a>
   <a href="projects.html">Projects</a>
-  <a href="reading-list.html">Reading List</a>
   <a href="blog.html">Blog</a>
+  <a href="reading-list.html">Reading List</a>
   <a href="about.html">About</a>
 </div>
-  <!-- Scripts -->
-  <script src="script.js"></script>
+    <script src="script.js"></script>
+
+  <script>
+    // Load the sidebar
+    fetch('sidebar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+      });
+  </script>
 </body>
 </html>

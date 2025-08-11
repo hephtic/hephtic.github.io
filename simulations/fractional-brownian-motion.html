@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas Tan - Simulations</title>
+  <link rel="stylesheet" href="https://latex.vercel.app/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+</head>
+<body>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Sidebar -->
+<div class="sidebar-hover-zone"></div> <!-- Optional hover buffer -->
+<nav class="sidebar expanded">
+  <ul>
+    <li><a href="../index.html"><i class="fas fa-house"></i><span>Home</span></a></li>
+    <li><a href="../projects.html"><i class="fas fa-diagram-project"></i><span>Projects</span></a></li>
+    <li><a href="../simulations.html"><i class="fas fa-computer"></i><span>Simulations</span></a></li>
+    <li><a href="../reading-list.html"><i class="fas fa-book-open-reader"></i><span>Reading List</span></a></li>
+    <li><a href="../blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
+    <li><a href="../about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
+  </ul>
+</nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <header>
+        <h1>Fractional Brownian Motion</h1>
+      </header>
+
+      <main>
+        <!-- Inserted simulation app (complete body contents from your second file) -->
+        <div class="fbm-sim">
+          <div class="app card" id="app">
+
+            <div class="controls">
+              <div class="card">
+                <label>Hurst exponent H <span id="Hval" class="muted">0.75</span></label>
+                <div class="range">
+                  <input id="H" type="range" min="0.1" max="0.9" step="0.01" value="0.75" style="width:120px">
+                </div>
+              </div>
+
+              <div class="card">
+                <label>Seed (integer)</label>
+                <input id="seed" type="text" value="12345">
+              </div>
+
+              <div class="card">
+                <label>Steps (N)</label>
+                <input id="steps" type="number" min="64" max="1024" step="1" value="512">
+              </div>
+
+              <div class="card">
+                <label>Scale / Window</label>
+                <select id="scale">
+                  <option value="1">[0,1] unit time</option>
+                  <option value="2">[0,2]</option>
+                  <option value="0.5">[0,0.5]</option>
+                </select>
+              </div>
+              <div class="card">
+                <label>Show</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <label style="font-size:13px"><input id="showInc" type="checkbox"> Increments plot</label>
+                  <label style="font-size:13px"><input id="showACF" type="checkbox"> Increments ACF</label>
+                </div>
+              </div>
+
+              <div class="card" style="display:flex;align-items:center;gap:8px">
+                <button id="draw" class="btn">Draw</button>
+                <button id="regen" class="btn">Random Seed</button>
+              </div>
+            </div>
+            </div>
+
+            <div class="layout">
+              <div class="plots">
+                <div class="card">
+                  <label>Paths (FBM = red, BM = blue)</label>
+                  <canvas id="pathCanvas" width="700" height="260"></canvas>
+                </div>
+
+                <div class="card" id="incCard" style="display:none">
+                  <label>Increments (FBM vs BM)</label>
+                  <canvas id="incCanvas" width="700" height="140"></canvas>
+                </div>
+
+                <div class="card" id="acfCard" style="display:none">
+                  <label>Sample autocorrelation of increments (lag 0..50)</label>
+                  <canvas id="acfCanvas" width="700" height="140"></canvas>
+                </div>
+
+              </div>
+
+              <aside class="card small">
+                <h3 style="margin-top:0">Notes - what to look for</h3>
+                <ul>
+                  <li>Standard Brownian motion (H=0.5) has independent increments. When generated from the <em>same</em> base normals, its increments are raw normals.</li>
+                  <li>Fractional Brownian motion (H ≠ 0.5) mixes the base normals via the Cholesky factor of the covariance matrix. That mixing introduces persistent (H > 0.5) or anti-persistent (H < 0.5) correlations in the increments.</li>
+                  <li>Compare the increments plots and the sample autocorrelation below; FBM shows nonzero autocorrelation while BM's acf (after the same base normals) will look like white noise.</li>
+                </ul>
+                <h4>Controls</h4>
+                <p class="muted">Change H and press <strong>Draw</strong>. Toggle the increments/ACF to inspect dependence. Reduce steps if cholesky becomes slow.</p>
+                <hr>
+                <h4>Technical details (brief)</h4>
+               <p>
+  We construct a covariance matrix
+  \[
+    \mathrm{Cov}(B_H(t_i), B_H(t_j)) = \frac{1}{2} \left( t_i^{2H} + t_j^{2H} - |t_i - t_j|^{2H} \right).
+  \]
+  We perform Cholesky decomposition \( L \) and set the path as \( \text{path} = L \times Z \), where \( Z \) are i.i.d. standard normals from the seeded RNG.
+  For fair comparison, Brownian motion uses the same \( Z \) sequence as its increments (cumulative sum).
+</p>
+              </aside>
+            </div>
+
+            <footer class="muted">Tip: use ≤512 steps for fast draws. Cholesky is O(N³).</footer>
+          </div>
+                  <p style="margin-top:18px">To explore more see <a href="https://en.wikipedia.org/wiki/Fractional_Brownian_motion" target="_blank" style="color: blue;text-decoration:underline">link</a>.</p>
+
+        </div>
+
+      </main>
+
+      <footer style="height:20px;margin-top:40px;"></footer>
+    </div>
+  </div>
+
+  <!-- Control buttons -->
+  <button id="theme-toggle" aria-label="Toggle Dark Mode">
+    <i id="theme-icon" class="fas fa-moon"></i>
+  </button>
+ <!-- Hamburger Button -->
+<button id="sidebar-toggle" aria-label="Toggle Sidebar" onclick="toggleMobileMenu()">
+  <i class="fas fa-bars"></i>
+</button>
+
+
+  <!-- Scripts: simulation logic + minimal UI glue (kept inline for portability) -->
+  <script>
+
+  /* ---------------- Simulation JS (from your second file) ---------------- */
+  // Seeded RNG
+  function mulberry32(a) {
+    return function() {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+
+  function seededNormal(rng) {
+    let spare = null;
+    return function() {
+      if (spare !== null) { const s=spare; spare=null; return s; }
+      let u=0,v=0,s=0;
+      do { u=rng()*2-1; v=rng()*2-1; s=u*u+v*v; } while(s===0 || s>=1);
+      const mul = Math.sqrt(-2*Math.log(s)/s);
+      spare = v*mul;
+      return u*mul;
+    }
+  }
+
+  // Cholesky
+  function cholesky(A) {
+    const n = A.length;
+    const L = Array.from({length:n},()=>new Float64Array(n));
+    for (let i=0;i<n;i++){
+      for (let j=0;j<=i;j++){
+        let s = A[i][j];
+        for (let k=0;k<j;k++) s -= L[i][k]*L[j][k];
+        if (i===j) {
+          if (s<=0) throw new Error('Matrix not positive definite (s=' + s + ')');
+          L[i][j] = Math.sqrt(s);
+        } else {
+          L[i][j] = s / L[j][j];
+        }
+      }
+    }
+    return L;
+  }
+
+  function matVecMul(L, z){ const n = L.length; const out = new Float64Array(n); for (let i=0;i<n;i++){ let s=0; const Li = L[i]; for (let j=0;j<=i;j++) s += Li[j]*z[j]; out[i]=s; } return out; }
+
+  // Covariance
+  function fbmCovariance(N, H, T=1) {
+    const cov = Array.from({length:N}, ()=> new Float64Array(N));
+    const dt = T / N;
+    const t = (i) => (i+1) * dt;
+    const pow2H = (x)=> Math.pow(x, 2*H);
+    for (let i=0;i<N;i++) {
+      for (let j=0;j<=i;j++) {
+        const c = 0.5 * (pow2H(t(i)) + pow2H(t(j)) - pow2H(Math.abs(t(i)-t(j))));
+        cov[i][j] = c;
+        cov[j][i] = c;
+      }
+    }
+    return cov;
+  }
+
+  // Utilities
+  function cumsum(arr){ const out=new Float64Array(arr.length); let s=0; for(let i=0;i<arr.length;i++){s+=arr[i]; out[i]=s;} return out; }
+  function mean(arr){ let s=0; for(let i=0;i<arr.length;i++) s+=arr[i]; return s/arr.length; }
+  function autocorr(x, maxlag=50){ const n = x.length; const m = mean(x); const acf = []; let denom=0; for(let i=0;i<n;i++){ denom += (x[i]-m)*(x[i]-m);} for(let lag=0;lag<=maxlag;lag++){ let num=0; for(let i=0;i<n-lag;i++){ num += (x[i]-m)*(x[i+lag]-m);} acf.push(num/denom); } return acf; }
+
+  // Drawing helpers
+  function clearCanvas(c){ const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); }
+  function drawPathCanvas(canvas, tValues, pathFBM, pathBM){
+    const ctx = canvas.getContext('2d'); clearCanvas(canvas);
+    const w=canvas.width, h=canvas.height, pad=32;
+    const all = pathFBM.concat(pathBM);
+    const min = Math.min(...all), max = Math.max(...all);
+    const scaleY = (v)=> h - pad - ( (v - min) / (max - min || 1) ) * (h - 2*pad);
+    const scaleX = (i)=> pad + (i/(tValues.length-1)) * (w - 2*pad);
+
+    // grid
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth=1;
+    for(let i=0;i<5;i++){ const y = pad + i*(h-2*pad)/4; ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); }
+
+    // BM (blue)
+    ctx.lineWidth=1.6; ctx.strokeStyle='rgba(30,120,255,0.95)'; ctx.beginPath();
+    for(let i=0;i<tValues.length;i++){ const x=scaleX(i), y=scaleY(pathBM[i]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+
+    // FBM (red)
+    ctx.lineWidth=1.6; ctx.strokeStyle='rgba(220,50,50,0.95)'; ctx.beginPath();
+    for(let i=0;i<tValues.length;i++){ const x=scaleX(i), y=scaleY(pathFBM[i]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+  }
+
+  function drawIncrements(canvas, incFBM, incBM){ const ctx=canvas.getContext('2d'); clearCanvas(canvas); const w=canvas.width,h=canvas.height,pad=24; const n=incFBM.length; const min=Math.min(...incFBM, ...incBM), max=Math.max(...incFBM,...incBM); const sX=(i)=> pad + (i/(n-1))*(w-2*pad); const sY=(v)=> h - pad - ( (v - min)/(max-min || 1) )*(h-2*pad);
+    ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(220,50,50,0.95)'; ctx.beginPath(); for(let i=0;i<n;i++){ const x=sX(i), y=sY(incFBM[i]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke();
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(30,120,255,0.95)'; ctx.beginPath(); for(let i=0;i<n;i++){ const x=sX(i), y=sY(incBM[i]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke(); }
+
+  function drawACF(canvas, acfFBM, acfBM){ const ctx=canvas.getContext('2d'); clearCanvas(canvas); const w=canvas.width,h=canvas.height,pad=24; const L=acfFBM.length; const sX=(i)=> pad + (i/(L-1))*(w-2*pad); const sY=(v)=> h - pad - (v)* (h-2*pad);
+    ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+    for(let i=0;i<L;i++){ const x=sX(i); const y=sY(acfFBM[i]); ctx.fillStyle='rgba(220,50,50,0.85)'; ctx.fillRect(x-4,y,8,h-pad-y);} 
+    for(let i=0;i<L;i++){ const x=sX(i); const y=sY(acfBM[i]); ctx.fillStyle='rgba(30,120,255,0.85)'; ctx.fillRect(x+6,y,8,h-pad-y);} }
+
+  // Main simulate
+  async function simulateAndDraw(){
+    const H = parseFloat(document.getElementById('H').value);
+    document.getElementById('Hval').innerText = H.toFixed(2);
+    const seedVal = parseInt(document.getElementById('seed').value) || 0;
+    const steps = Math.max(2, Math.min(1024, parseInt(document.getElementById('steps').value)||512));
+    const T = parseFloat(document.getElementById('scale').value);
+    const showInc = document.getElementById('showInc').checked;
+    const showACF = document.getElementById('showACF').checked;
+
+    const pathCanvas = document.getElementById('pathCanvas');
+    const incCard = document.getElementById('incCard');
+    const acfCard = document.getElementById('acfCard');
+    incCard.style.display = showInc ? 'block' : 'none';
+    acfCard.style.display = showACF ? 'block' : 'none';
+
+    const rng = mulberry32(seedVal|0);
+    const normal = seededNormal(rng);
+    const N = steps;
+    const Z = new Float64Array(N);
+    for(let i=0;i<N;i++) Z[i] = normal();
+
+    try {
+      const cov = fbmCovariance(N, H, T);
+      const L = cholesky(cov);
+      const fbmVals = matVecMul(L, Z);
+
+      const dt = T/(N-1);
+      const bmIncrements = new Float64Array(N);
+      for (let i=0;i<N;i++) bmIncrements[i] = Z[i] * Math.sqrt(dt);
+      const bmVals = cumsum(bmIncrements);
+
+      const fbmValsFull = [0, ...fbmVals];
+      const bmValsFull  = [0, ...bmVals];
+      const tValues = Array.from({length:N+1}, (_,i)=> i * (T/(N)));
+      drawPathCanvas(pathCanvas, tValues, fbmValsFull, bmValsFull);
+
+      if (showInc){
+        const incFBM = new Float64Array(N-1);
+        for(let i=1;i<N;i++) incFBM[i-1] = fbmVals[i] - fbmVals[i-1];
+        const incBM = new Float64Array(N-1);
+        for(let i=1;i<N;i++) incBM[i-1] = bmVals[i] - bmVals[i-1];
+        drawIncrements(document.getElementById('incCanvas'), Array.from(incFBM), Array.from(incBM));
+      }
+
+      if (showACF){
+        const incFBM = new Float64Array(N-1);
+        for(let i=1;i<N;i++) incFBM[i-1] = fbmVals[i] - fbmVals[i-1];
+        const incBM = new Float64Array(N-1);
+        for(let i=1;i<N;i++) incBM[i-1] = bmVals[i] - bmVals[i-1];
+        const acfFBM = autocorr(Array.from(incFBM), 50);
+        const acfBM = autocorr(Array.from(incBM), 50);
+        drawACF(document.getElementById('acfCanvas'), acfFBM, acfBM);
+      }
+
+    } catch (err){
+      alert('Simulation failed: ' + err.message + '\nTry lowering steps (e.g. ≤512).');
+    }
+  }
+
+  // UI wiring
+  document.getElementById('draw').addEventListener('click', simulateAndDraw);
+  document.getElementById('regen').addEventListener('click', ()=>{ document.getElementById('seed').value = Math.floor(Math.random()*2**31); simulateAndDraw(); });
+  document.getElementById('H').addEventListener('input', ()=> document.getElementById('Hval').innerText = parseFloat(document.getElementById('H').value).toFixed(2));
+  document.getElementById('showInc').addEventListener('change', simulateAndDraw);
+  document.getElementById('showACF').addEventListener('change', simulateAndDraw);
+
+  // initial draw after a tick so canvas sizes are stable
+  setTimeout(simulateAndDraw, 120);
+  </script>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu">
+  <a href="../index.html">Home</a>
+  <a href="../projects.html">Projects</a>
+  <a href="../reading-list.html">Reading List</a>
+  <a href="../blog.html">Blog</a>
+  <a href="../about.html">About</a>
+</div>
+    <script src="rw.js"></script>
+    <script src="../script.js"></script>
+
+</body>
+</html>

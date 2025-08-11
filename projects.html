@@ -29,8 +29,9 @@
   <ul>
     <li><a href="index.html"><i class="fas fa-house"></i><span>Home</span></a></li>
     <li><a href="projects.html"><i class="fas fa-diagram-project"></i><span>Projects</span></a></li>
-    <li><a href="blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
+    <li><a href="simulations.html"><i class="fas fa-computer"></i><span>Simulations</span></a></li>
     <li><a href="reading-list.html"><i class="fas fa-book-open-reader"></i><span>Reading List</span></a></li>
+    <li><a href="blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
     <li><a href="about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
   </ul>
 </nav><!-- Main Content -->
@@ -43,7 +44,7 @@
 </header>
 
   <main class="view-stack">
-    <p>Here are some of my personal projects:</p>
+    <p>Here are some of my personal projects (links currently not fully setup):</p>
 
     <!-- Text View -->
     <div id="textView" class="view active">
@@ -51,6 +52,7 @@
         <div class="project-card">
           <h3> <a href="blank" target="_blank">
             1. Polymarket Data Analysis & Scraper Optimization Package
+          <i class="fas fa-link" style="margin-left: 6px";></i>
           </a></h3>
           <p>Topics: Prediction markets, on-chain data extraction, trading behavior</p>
           <p>Methods: API scraping, data cleaning, performance optimization, modular package design</p>
@@ -61,19 +63,22 @@
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/usa_income" target="_blank">
             2. Income Factors Analysis </a>
+            <i class="fas fa-link" style="margin-left: 6px";></i>
           </h3>
-          <p>Topics: Gender wage gap, labor economics, income inequality</p>
-          <p>Methods: Linear regression, Blinder-Oaxaca decomposition, Lasso Regression, Random Forest</p>
-          <p>Tools: Python (pandas, scikit-learn, statsmodels), R (dplyr)</p>
-          <p>Data: IPUMS labor survey (2009–2024)</p>
+          <p>Topics: Gender wage gap, labor economics, income inequality, labor market segmentation</p>
+          <p>Methods: Linear regression, Blinder-Oaxaca decomposition, Lasso Regression, Random Forest, PCA, NMF, XGBoost, Hierarchical Bayesian Linear Model (MCMC), Cramér’s V, Kruskal-Wallis H-test</p>
+          <p>Tools: Python (pandas, scikit-learn, statsmodels, scipy, xgboost), R (dplyr)</p>
+          <p>Data: IPUMS labor survey (2009–2024), CPS microdata</p>
           <p>Analyzed gender-based wage disparities by separating explained and unexplained income gaps using statistical and machine learning models. Highlighted key predictors of wage differences and assessed their structural contributions over time.</p>
+          <p>Additionally, used unsupervised methods (PCA, NMF) to explore lower-dimensional structure in wage distributions across industries. Applied XGBoost and hierarchical Bayesian regression (via MCMC) to model wage variation and identify robust nonlinear predictors, incorporating race, education, industry, and time. Cramér’s V and nonparametric tests further revealed clustering and dispersion trends in labor market participation.</p>
         </div>
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/unemployment-education-recovery-analysis" target="_blank">
             3. Unemployment COVID Recovery Analysis
+            <i class="fas fa-link" style="margin-left: 6px";></i>
           </a></h3>
           <p>Topics: Labor market recovery, education inequality, regional disparities, COVID-19 economic impact</p>
-          <p>Methods: Linear regression (OLS), quantile regression (τ = 0.1–0.9), log transformations, bootstrapping, Breusch-Pagan test</p>
+          <p>Methods: Linear regression (OLS), quantile regression (τ = 0.1-0.9), log transformations, bootstrapping, Breusch-Pagan test</p>
           <p>Tools: Python (pandas, statsmodels, matplotlib, seaborn)</p>
           <p>Data: USDA Economic Research Service – County-level education and unemployment rates (2019–2023)</p>          
           <p>Used quantile regressions to assess how education levels influenced post-COVID unemployment recovery across U.S. counties. Found stronger recovery patterns among higher-educated regions, particularly in lower quantiles of the unemployment distribution.</p>
@@ -81,6 +86,7 @@
         <div class="project-card">
           <h3> <a href="https://github.com/hephtic/sticky-analysis" target="_blank">
             4. Sticky-ness of Inflation Analysis
+            <i class="fas fa-link" style="margin-left: 6px";></i>
           </a></h3>
           <p>Topics: Inflation stickiness, housing market dynamics, CPI decomposition, macroeconomic indicators</p>
           <p>Methods: Time series decomposition, seasonality testing, cross-basket regression analysis, correlation analysis</p>
@@ -91,6 +97,7 @@
         <div class="project-card">
           <h3><a href="https://github.com/hephtic/game_theory" target="_blank">
             5. Evolutionary Game Theory Simulation
+            <i class="fas fa-link" style="margin-left: 6px";></i>
           </a></h3>
             <p>Topics: Evolutionary game theory, cooperation, public goods games, punishment, strategy dynamics</p>
             <p>Methods: Agent-based simulation, heatmap analysis, variance analysis, parameter sweeps</p>
@@ -99,16 +106,18 @@
             <p>Developed an agent-based model of a finite population public goods game with optional punishment and mutation. Explored how cooperation evolves under varying selection strengths and institutional rules, identifying regimes that foster stable cooperation.</p>
         </div>
     </div>
+
+    <footer style="height: 20px; margin-top: 40px;"></footer>
+
     </div>
 
     <!-- Graph View -->
     <div id="graphView" class="view">
-      <div id="project-graph" style="width: 100%; height: 475px;"></div>
+      <div id="project-graph" style="width: 100%; height: 450px;"></div>
       <div id="description-box" style="min-height:2em;text-align:center;margin-top:1em;color:var(--text-color);"></div>    
 </div>
   </main>
 
- <footer style="height: 1700px; margin-top: 40px;"></footer>
 
   <!-- Control buttons -->
   <button id="theme-toggle" aria-label="Toggle Dark Mode">
@@ -124,8 +133,8 @@
 <div id="mobile-menu" class="mobile-menu">
   <a href="index.html">Home</a>
   <a href="projects.html">Projects</a>
-  <a href="blog.html">Blog</a>
   <a href="reading-list.html">Reading List</a>
+  <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
 </div>
     

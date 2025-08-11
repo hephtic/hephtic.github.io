@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a personal website for Nicholas Tan, showcasing various sections including projects, a blog, a reading list, and an about page. The website features a sidebar for easy navigation and dynamic elements such as theme toggling and particle effects.
+This project is my personal website, showcasing various sections including projects, a reading list, and math simulations. The website features a sidebar for easy navigation and dynamic elements such as theme toggling and particle effects.
 
 ## File Structure
 
@@ -10,6 +10,7 @@ This project is a personal website for Nicholas Tan, showcasing various sections
 - `projects.html`: Displays personal projects and references the sidebar for navigation.
 - `blog.html`: Intended for the blog section, includes relevant content and sidebar navigation.
 - `reading-list.html`: Displays a list of books or articles with sidebar navigation.
+- `simulations.html`: Contains varying simulations of mathematical concepts.
 - `about.html`: Contains information about the website owner and the purpose of the site.
 - `sidebar.html`: HTML structure for the sidebar navigation, linking to all main sections.
 - `style.css`: CSS styles defining the layout, colors, fonts, and visual aspects of the site.
@@ -28,3 +29,8 @@ This project is a personal website for Nicholas Tan, showcasing various sections
 - Consider implementing a template engine for easier management of common elements across pages.
 - Add more content to the blog and projects sections.
 - Enhance the design with additional CSS styles and animations.
+- Consider redesign of Projects page
+    - Enhance graph visuals (color coding, clearer edge connections, etc.)
+    - Fix links in projects page and graph view
+- Add more simulations/clean up visuals
+- Eventually revamp site for easier implementation of future content.

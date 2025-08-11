@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
           "opacity": 0.2,
           "width": 1
         },
-        "move": { "enable": true, "speed": 0.7 }
+        "move": { "enable": true, "speed": 0.6 }
       },
       "interactivity": {
         "detect_on": "canvas",
@@ -119,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const menu = document.getElementById("mobile-menu");
   const toggleButton = document.getElementById("sidebar-toggle");
@@ -201,10 +200,12 @@ function initGraph() {
 
   // Theme colors
   const isDark = document.documentElement.classList.contains('dark');
-  const nodeColor = isDark ? 'white' : 'black';
-  const edgeColor = isDark ? 'white' : 'black';
-  const fontColor = isDark ? 'white' : 'black';
-  const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() || '#fff';
+  const nodeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const fontColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-bg').trim() || '#fff';
+
+  updateGraphColors();
 
   // Create nodes
   const nodes = new vis.DataSet([
@@ -217,7 +218,7 @@ function initGraph() {
   {
     id: 2,
     label: "Income \nFactors",
-    description: "Analyzes gender wage gaps using regression, decomposition, and machine learning on IPUMS labor data.",
+    description: "Analyzes wage data using regression, decomposition, unsupervised learning, Bayesian inference to reveal deeper patterns in labor market structure.",
     url: "https://github.com/hephtic/usa_income"
   },
   {
@@ -303,8 +304,9 @@ function initGraph() {
     },
     edges: {
       color: edgeColor,
-      width: 2,
-      smooth: false
+      width: 1,
+      smooth: false,
+      length: 120
     }
   };
 
@@ -478,29 +480,50 @@ network.once('stabilizationIterationsDone', () => {
 // Theme update function
 function updateGraphColors() {
   const isDark = document.documentElement.classList.contains('dark');
-  const nodeColor = isDark ? 'white' : 'black';
-  const edgeColor = isDark ? 'white' : 'black';
-  const fontColor = isDark ? 'white' : 'black';
-  const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() || '#fff';
+  const nodeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const fontColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#fff';
+  const bgColor = getComputedStyle(document.documentElement)
+    .getPropertyValue('--sidebar-bg')
+    .trim() || '#fff';
 
   if (window.graphNetwork && window.graphNodes && window.graphEdges) {
-    window.graphNodes.forEach(function(node) {
-      window.graphNodes.update({
-        id: node.id,
+    // Update nodes
+    const allNodes = window.graphNodes.get().map(node => ({
+      id: node.id,
+      color: {
+        background: bgColor,
+        border: nodeColor,
+        highlight: { background: bgColor, border: nodeColor },
+        hover: { background: bgColor, border: nodeColor }
+      },
+      font: { color: fontColor }
+    }));
+
+    // Update edges (including hover color)
+    const allEdges = window.graphEdges.get().map(edge => ({
+      id: edge.id,
+      color: {
+        color: edgeColor,
+        highlight: edgeColor,  // Explicitly set hover/highlight color
+        hover: edgeColor,
+        inherit: false
+      }
+    }));
+
+    window.graphNodes.update(allNodes);
+    window.graphEdges.update(allEdges);
+    
+    // Force a full redraw and physics recalculation
+    window.graphNetwork.setOptions({
+      edges: {
         color: {
-          background: bgColor,
-          border: nodeColor,
-          highlight: { background: bgColor, border: nodeColor },
-          hover: { background: bgColor, border: nodeColor }
-        },
-        font: { color: fontColor }
-      });
+          color: edgeColor,
+          highlight: edgeColor,
+          hover: edgeColor
+        }
+      }
     });
-    window.graphEdges.forEach(function(edge) {
-      window.graphEdges.update({
-        id: edge.id,
-        color: { color: edgeColor, inherit: false }
-      });
-    });
+    window.graphNetwork.redraw();
   }
 }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas Tan - Simulations</title>
+  <link rel="stylesheet" href="https://latex.vercel.app/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+</head>
+<body>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Sidebar -->
+<div class="sidebar-hover-zone"></div> <!-- Optional hover buffer -->
+<nav class="sidebar expanded">
+  <ul>
+    <li><a href="../index.html"><i class="fas fa-house"></i><span>Home</span></a></li>
+    <li><a href="../projects.html"><i class="fas fa-diagram-project"></i><span>Projects</span></a></li>
+    <li><a href="../simulations.html"><i class="fas fa-computer"></i><span>Simulations</span></a></li>
+    <li><a href="../reading-list.html"><i class="fas fa-book-open-reader"></i><span>Reading List</span></a></li>
+    <li><a href="../blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
+    <li><a href="../about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
+  </ul>
+</nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <header>
+        <h1>Random Walk Recurrence</h1>
+      </header>
+      
+      <main>
+        <p>In probability theory, a symmetric random walk is recurrent in 1D and 2D, as in it returns to the origin almost surely, given infinite time. In 3D (and in any higher dimensions), this random walk is transient, there's a nonzero chance it never returns. This simulation uses finite steps for computation purposes, so recurrence is not guaranteed, but you'll see strong differences in return behavior and convergence of probability as we simulate random walks in each of these dimensions.</p>
+      </main>
+      <br>
+
+      <div>
+        <div class="controls">
+      <label for="dimension-select">Dimension:</label>
+      <select id="dimension-select">
+        <option value="1">1D</option>
+        <option value="2">2D</option>
+        <option value="3">3D</option>
+      </select>
+      <button id="run-btn">Run Simulation</button>
+    </div>
+
+    <canvas id="walk-visualization"></canvas>
+    <ul id="return-rates"></ul>
+    <canvas id="returnChart" width="600" height="400"></canvas>
+
+    </div>
+    <p> Notice how in 1D and 2D the return rates approach 1 (this is not fully convincing in the 2D case if we had infinite computing power it would be true), while the return rate in 3D seems to converge at around 0.34. This is the convergence of probabilities as we approach infinity supported by the recurrence and transience in these dimensions. </p>
+    
+    <p> To see the rigorous mathematics behind this see <a href="https://www.statslab.cam.ac.uk/~james/Markov/s16.pdf" target = "_blank" style = "color: blue; text-decoration: underline;">link</a>.
+ </p>
+ <footer style="height: 20px; margin-top: 40px;"></footer>
+ </div>
+
+  <!-- Control buttons -->
+  <button id="theme-toggle" aria-label="Toggle Dark Mode">
+    <i id="theme-icon" class="fas fa-moon"></i>
+  </button>
+ <!-- Hamburger Button -->
+<button id="sidebar-toggle" aria-label="Toggle Sidebar" onclick="toggleMobileMenu()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu">
+  <a href="../index.html">Home</a>
+  <a href="../projects.html">Projects</a>
+  <a href="../reading-list.html">Reading List</a>
+  <a href="../blog.html">Blog</a>
+  <a href="../about.html">About</a>
+</div>
+    <script src="rw.js"></script>
+    <script src="../script.js"></script>
+
+</body>
+</html>
