@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas Tan - Simulations</title>
+  <link rel="stylesheet" href="https://latex.vercel.app/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+<style>
+  /* Outer progress bar */
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: var(--sidebar-bg); /* light gray background */
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+  transition: background-color 0.2s ease-in-out; /* smooth animation */
+
+}
+
+/* Inner fill bar */
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background-color: #28a745; /* green fill */
+  border-radius: 10px 0 0 10px;
+  transition: width 0.2s ease-in-out; /* smooth animation */
+}
+</style>
+</head>
+<body>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Sidebar -->
+<div class="sidebar-hover-zone"></div> <!-- Optional hover buffer -->
+<nav class="sidebar expanded">
+  <ul>
+    <li><a href="../index.html"><i class="fas fa-house"></i><span>Home</span></a></li>
+    <li><a href="../projects.html"><i class="fas fa-diagram-project"></i><span>Projects</span></a></li>
+    <li><a href="../simulations.html"><i class="fas fa-computer"></i><span>Simulations</span></a></li>
+    <li><a href="../reading-list.html"><i class="fas fa-book-open-reader"></i><span>Reading List</span></a></li>
+    <li><a href="../blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
+    <li><a href="../about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
+  </ul>
+</nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <header>
+        <h1>Auction Theory Simulation</h1>
+      </header>
+      
+      <main>
+<p style="text-indent: 20px;">
+    <strong>Auction Theory</strong> is the study of how bidders act in auctions. Explore varying environments and bidder strategies. </p>    
+
+        <div class="auction-section">
+          <h2>Auction Configuration</h2>
+              <p>Configure the varying auction types, your private value, your bid, and the number of other players.</p>
+              <br>
+          <div class="controls-grid">
+            <div class="control-group">
+              <label for="auctionType">Auction Type:</label>
+              <select id="auctionType" onchange="updateAuctionDescription()">
+                <option value="first">First-Price Sealed-Bid</option>
+                <option value="second">Second-Price (Vickrey)</option>
+                <option value="english">English (Ascending)</option>
+                <option value="dutch">Dutch (Descending)</option>
+                <option value="allpay">All-Pay Auction</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="userValue">Your Private Value (0-100):</label>
+              <input type="number" id="userValue" value="70" min="0" max="100">
+            </div>
+            <div class="control-group">
+              <label for="userBid">Your Bid:</label>
+              <input type="number" id="userBid" value="70" min="0" max="100">
+            </div>
+            <div class="control-group">
+              <label for="numAI">Number of AI Bidders:</label>
+              <select id="numAI" onchange="generateAIStrategies()">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div id="auction-description" style="background: #e3f2fd; color: #0c5460; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <!-- Auction description will be inserted here -->
+          </div>
+          <h3>AI Bidding Strategies</h3>
+            <p>Configure the varying AI bidding strategies.</p>
+          <div id="ai-strategies"></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button onclick="runAuction()" style="font-size: 16px;">Run Single Auction</button>
+            <button onclick="runBulkSimulation()" style="font-size: 16px; background: linear-gradient(45deg, #28a745, #20c997);">Run 1000 Simulations</button>
+          </div>
+        </div>
+          <br>
+        <div class="auction-section">
+          <h2>Single Simulation Results</h2>
+          <div id="results-container">
+            <div class="result-card">
+              <p>Click "Run Single Auction" to see individual results</p>
+            </div>
+          </div>
+        </div>
+          <br>
+        <div class="auction-section">
+          <h2>Bulk Simulation Analysis</h2>
+          <div id="bulk-results">
+            <div class="result-card">
+              <p>Click "Run 1000 Simulations" to see comprehensive analysis</p>
+            </div>
+          </div>
+        </div>
+          <br>
+        <div class="auction-section">
+          <h2>Performance Analytics</h2>
+          <div id="analytics"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+  <!-- Control buttons -->
+  <button id="theme-toggle" aria-label="Toggle Dark Mode">
+    <i id="theme-icon" class="fas fa-moon"></i>
+  </button>
+ <!-- Hamburger Button -->
+<button id="sidebar-toggle" aria-label="Toggle Sidebar" onclick="toggleMobileMenu()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu">
+  <a href="../index.html">Home</a>
+  <a href="../projects.html">Projects</a>
+  <a href="../reading-list.html">Reading List</a>
+  <a href="../blog.html">Blog</a>
+  <a href="../about.html">About</a>
+</div>
+    <script src="../script.js" defer></script>
+  <script>
+    // Load the sidebar
+    fetch('../sidebar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+      });
+  </script>
+
+  
+  <!-- The advanced auction logic script -->
+  <script>
+    // --- START OF SIMULATOR LOGIC ---
+
+    // Global variables
+    let simulationHistory = [];
+    let bulkSimulationData = null;
+
+    // Strategy definitions
+    const strategies = {
+      truthful: { name: "Truthful", desc: "Bid equals private value" },
+      conservative: { name: "Conservative", desc: "Bid 70-85% of value" },
+      aggressive: { name: "Aggressive", desc: "Bid 90-110% of value" },
+      random: { name: "Random", desc: "Random bid 0-100" },
+      shading: { name: "Optimal Shading", desc: "Strategic bid reduction" },
+      learning: { name: "Learning", desc: "Adapts based on history" }
+    };
+
+    // Initialize the simulator
+    function init() {
+      generateAIStrategies();
+      updateAuctionDescription();
+      updateAnalytics(); // Initial call to show placeholder
+    }
+
+    function updateAuctionDescription() {
+      const auctionType = document.getElementById("auctionType").value;
+      const descriptions = {
+        first: "🎯 <strong>First-Price Sealed-Bid:</strong> Highest bidder wins and pays their bid. Strategic bid shading is optimal.",
+        second: "🎖️ <strong>Second-Price (Vickrey):</strong> Highest bidder wins but pays the second-highest bid. Truthful bidding is the dominant strategy.",
+        english: "⬆️ <strong>English Ascending:</strong> Price rises until only one bidder remains. Strategically equivalent to a second-price auction.",
+        dutch: "⬇️ <strong>Dutch Descending:</strong> Price falls until a bidder accepts it. Strategically equivalent to a first-price sealed-bid auction.",
+        allpay: "💰 <strong>All-Pay Auction:</strong> Highest bidder wins, but ALL bidders pay their bids. Common in contests, lobbying, and R&D races."
+      };
+      
+      document.getElementById("auction-description").innerHTML = descriptions[auctionType];
+    }
+
+    function generateAIStrategies() {
+      const numAI = parseInt(document.getElementById("numAI").value);
+      const container = document.getElementById("ai-strategies");
+      container.innerHTML = "";
+
+      for (let i = 0; i < numAI; i++) {
+        const strategyDiv = document.createElement("div");
+        strategyDiv.className = "ai-strategy";
+        
+        const strategyKeys = Object.keys(strategies);
+        const randomStrategy = strategyKeys[Math.floor(Math.random() * strategyKeys.length)];
+        
+        strategyDiv.innerHTML = `
+          <div class="ai-strategy-header">AI Bidder ${i + 1}</div>
+          <div class="strategy-controls">
+            <div class="control-group">
+              <label>Strategy:</label>
+              <select id="ai-strategy-${i}" onchange="updateStrategyDescription(${i})">
+                ${strategyKeys.map(key => `
+                  <option value="${key}" ${key === randomStrategy ? 'selected' : ''}>${strategies[key].name}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+          <small id="strategy-desc-${i}" style="color: var(--text-color-secondary); margin-top: 5px; display: block;">${strategies[randomStrategy].desc}</small>
+        `;
+        
+        container.appendChild(strategyDiv);
+      }
+    }
+
+    function updateStrategyDescription(aiIndex) {
+      const strategy = document.getElementById(`ai-strategy-${aiIndex}`).value;
+      const descElement = document.getElementById(`strategy-desc-${aiIndex}`);
+      if (descElement) {
+        descElement.textContent = strategies[strategy].desc;
+      }
+    }
+
+    function calculateAIBid(value, strategy, auctionType, history = []) {
+      let baseBid;
+      
+      switch(strategy) {
+        case "truthful":
+          baseBid = value;
+          break;
+        case "conservative":
+          baseBid = value * (0.7 + 0.15 * Math.random());
+          break;
+        case "aggressive":
+          baseBid = value * (0.9 + 0.2 * Math.random());
+          break;
+        case "random":
+          baseBid = Math.random() * 100;
+          break;
+        case "shading":
+          // Optimal shading for first-price auction (assuming uniform distribution)
+          if (auctionType === "first" || auctionType === "dutch") {
+            const numBidders = parseInt(document.getElementById("numAI").value) + 1;
+            baseBid = value * (numBidders - 1) / numBidders;
+          } else {
+            baseBid = value; // No shading needed in second-price
+          }
+          break;
+        case "learning":
+          // Simple learning: adjust based on previous wins/losses
+          let adjustment = 1.0;
+          if (history.length > 0) {
+            const recentWins = history.slice(-5).filter(h => h.won).length;
+            const recentTotal = Math.min(history.length, 5);
+            adjustment = 0.8 + (recentWins / recentTotal) * 0.4;
+          }
+          baseBid = value * adjustment;
+          break;
+      }
+      
+      // Auction-specific strategy adjustments
+      if (auctionType === "second" || auctionType === "english") {
+        // In second-price auctions, truthful bidding is dominant. Push bids towards value.
+        return value;
+      } else if (auctionType === "allpay") {
+        // In all-pay auctions, bid more conservatively
+        baseBid *= 0.6;
+      }
+      
+      return Math.max(0, Math.min(100, Math.round(baseBid)));
+    }
+
+    function runAuction() {
+      const auctionType = document.getElementById("auctionType").value;
+      const userValue = parseInt(document.getElementById("userValue").value);
+      const userBid = parseInt(document.getElementById("userBid").value);
+      const numAI = parseInt(document.getElementById("numAI").value);
+
+      // Generate AI players
+      let aiBidders = [];
+      for (let i = 0; i < numAI; i++) {
+        const value = Math.floor(Math.random() * 101);
+        const strategy = document.getElementById(`ai-strategy-${i}`).value;
+        const bid = calculateAIBid(value, strategy, auctionType);
+        
+        aiBidders.push({
+          id: i + 1,
+          value: value,
+          bid: bid,
+          strategy: strategies[strategy].name
+        });
+      }
+
+      // Run the auction
+      const result = simulateAuction(auctionType, userValue, userBid, aiBidders);
+      
+      // Store result in history
+      simulationHistory.push(result);
+      
+      // Display results
+      displayResults(result);
+      updateAnalytics();
+    }
+
+    function simulateAuction(auctionType, userValue, userBid, aiBidders) {
+      const allBidders = [
+        { id: 0, value: userValue, bid: userBid, strategy: "Human", isUser: true },
+        ...aiBidders
+      ];
+
+      let winner, pricePaid, allPay = false;
+
+      // Handle ties by picking a random winner among those with the max bid
+      const getMaxBidders = (bidders) => {
+        const maxBid = Math.max(...bidders.map(b => b.bid));
+        return bidders.filter(b => b.bid === maxBid);
+      };
+      
+      const resolveTie = (tiedBidders) => {
+          return tiedBidders[Math.floor(Math.random() * tiedBidders.length)];
+      };
+
+      switch(auctionType) {
+        case "first":
+        case "allpay": // Logic is similar for finding the winner
+          const topBiddersFirst = getMaxBidders(allBidders);
+          winner = resolveTie(topBiddersFirst);
+          pricePaid = winner.bid;
+          if (auctionType === "allpay") allPay = true;
+          break;
+
+        case "second":
+        case "english": // Strategically equivalent
+          const sortedBids = [...allBidders].sort((a, b) => b.bid - a.bid);
+          const topBiddersSecond = getMaxBidders(sortedBids);
+          winner = resolveTie(topBiddersSecond);
+          pricePaid = sortedBids.length > 1 ? sortedBids[1].bid : 0;
+          break;
+
+        case "dutch":
+          let dutchPrice = 100;
+          winner = null;
+          while (!winner && dutchPrice >= 0) {
+            const willingBidders = allBidders.filter(b => b.bid >= dutchPrice);
+            if (willingBidders.length > 0) {
+              winner = resolveTie(willingBidders);
+              pricePaid = dutchPrice;
+            }
+            dutchPrice -= 1;
+          }
+          if (!winner) { // No one bid
+            winner = allBidders[0]; // Default winner for calculation, though no transaction occurs
+            pricePaid = 0;
+          }
+          break;
+      }
+
+      const userPayoff = calculatePayoff(allBidders[0], winner, pricePaid, allPay);
+      
+      return {
+        auctionType,
+        winner,
+        pricePaid,
+        allPay,
+        userPayoff,
+        allBidders,
+        timestamp: new Date()
+      };
+    }
+
+    function calculatePayoff(bidder, winner, pricePaid, allPay) {
+      if (allPay) {
+        return (bidder.id === winner.id ? bidder.value : 0) - bidder.bid;
+      } else {
+        return bidder.id === winner.id ? (bidder.value - pricePaid) : 0;
+      }
+    }
+
+    function displayResults(result) {
+      const container = document.getElementById("results-container");
+      
+      let html = `
+        <div class="results-grid">
+          <div class="result-card ${result.winner.isUser ? 'winner' : ''}">
+            <h4>${result.winner.isUser ? '🎉 You Won!' : '😞 An AI Won'}</h4>
+            <p><strong>Winner:</strong> ${result.winner.isUser ? 'You' : `AI ${result.winner.id} (${result.winner.strategy})`}</p>
+            <p><strong>Winning Bid:</strong> $${result.winner.bid}</p>
+            <p><strong>Price Paid:</strong> $${result.pricePaid}</p>
+            <p><strong>Your Payoff:</strong> <span style="color: ${result.userPayoff >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;">$${result.userPayoff}</span></p>
+          </div>
+          
+          <div class="result-card">
+            <h4>Bidder Summary</h4>
+            <div style="max-height: 200px; overflow-y: auto;">
+      `;
+      
+      result.allBidders.sort((a, b) => b.bid - a.bid).forEach(bidder => {
+        const isWinner = bidder.id === result.winner.id && bidder.isUser === result.winner.isUser;
+        html += `
+          <div style="padding: 8px; margin: 5px 0; background: ${isWinner ? '#6EC175' : 'var(--bg-color-secondary)'}; border-radius: 4px; border-left: 3px solid ${isWinner ? '#28a745' : '#dee2e6'};">
+            <strong>${bidder.isUser ? 'You' : `AI ${bidder.id}`}</strong> (${bidder.strategy})<br>
+            Value: $${bidder.value} | Bid: $${bidder.bid}
+            ${result.allPay ? ` | Paid: $${bidder.bid}` : ''}
+          </div>
+        `;
+      });
+      
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
+      
+      if (result.allPay) {
+        html += `
+          <div class="result-card" style="grid-column: 1 / -1; background: #fff3cd; color: #856404; border-color: #ffc107; margin-top: 20px;">
+            <h4>⚠️ All-Pay Auction</h4>
+            <p>In this auction, <strong>all bidders pay their bids</strong> regardless of winning. Total revenue generated: $${result.allBidders.reduce((sum, b) => sum + b.bid, 0)}</p>
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function runBulkSimulation() {
+      const numSimulations = 1000;
+      const auctionType = document.getElementById("auctionType").value;
+      const userValue = parseInt(document.getElementById("userValue").value);
+      const userBid = parseInt(document.getElementById("userBid").value);
+      const numAI = parseInt(document.getElementById("numAI").value);
+
+      const bulkContainer = document.getElementById("bulk-results");
+      bulkContainer.innerHTML = `
+        <div class="result-card">
+          <h4>Running ${numSimulations} simulations...</h4>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <p id="progress-text">0 / ${numSimulations} completed</p>
+        </div>
+      `;
+
+      const stats = {
+        bidderWins: {},
+        totalPayoffs: {},
+        allPayoffs: {},
+        allResults: []
+      };
+
+      stats.bidderWins['user'] = 0;
+      stats.totalPayoffs['user'] = 0;
+      stats.allPayoffs['user'] = [];
+
+      for (let i = 0; i < numAI; i++) {
+        const aiId = `ai${i + 1}`;
+        stats.bidderWins[aiId] = 0;
+        stats.totalPayoffs[aiId] = 0;
+        stats.allPayoffs[aiId] = [];
+      }
+
+      let completedSimulations = 0;
+      
+      function runSingleSim() {
+        let aiBidders = [];
+        for (let i = 0; i < numAI; i++) {
+          const value = Math.floor(Math.random() * 101);
+          const strategy = document.getElementById(`ai-strategy-${i}`).value;
+          const bid = calculateAIBid(value, strategy, auctionType, stats.allResults);
+          
+          aiBidders.push({
+            id: i + 1,
+            value: value,
+            bid: bid,
+            strategy: strategies[strategy].name
+          });
+        }
+
+        const result = simulateAuction(auctionType, userValue, userBid, aiBidders);
+        stats.allResults.push(result);
+
+        const winnerKey = result.winner.isUser ? 'user' : `ai${result.winner.id}`;
+        stats.bidderWins[winnerKey]++;
+
+        result.allBidders.forEach(bidder => {
+          const key = bidder.isUser ? 'user' : `ai${bidder.id}`;
+          const payoff = calculatePayoff(bidder, result.winner, result.pricePaid, result.allPay);
+          stats.totalPayoffs[key] += payoff;
+          stats.allPayoffs[key].push(payoff);
+        });
+
+        completedSimulations++;
+        
+        if (completedSimulations % 10 === 0) { // Update UI less frequently for performance
+            const progressFill = document.getElementById("progress-fill");
+            const progressText = document.getElementById("progress-text");
+            if (progressFill) {
+              progressFill.style.width = `${(completedSimulations / numSimulations) * 100}%`;
+            }
+            if (progressText) {
+              progressText.textContent = `${completedSimulations} / ${numSimulations} completed`;
+            }
+        }
+        
+        if (completedSimulations < numSimulations) {
+          setTimeout(runSingleSim, 0); // Use timeout 0 for non-blocking loop
+        } else {
+          bulkSimulationData = stats;
+          displayBulkResults(stats, numSimulations, auctionType, numAI);
+          updateAnalytics();
+        }
+      }
+
+      runSingleSim();
+    }
+
+    function displayBulkResults(stats, numSimulations, auctionType, numAI) {
+      const container = document.getElementById("bulk-results");
+      
+      const avgPricePaid = stats.allResults.reduce((sum, r) => sum + r.pricePaid, 0) / numSimulations;
+      const avgWinningBid = stats.allResults.reduce((sum, r) => sum + r.winner.bid, 0) / numSimulations;
+      
+      let html = `
+        <div class="result-card">
+          <h4>Bulk Simulation Results (${numSimulations} games)</h4>
+          <p><strong>Auction Type:</strong> ${auctionType.charAt(0).toUpperCase() + auctionType.slice(1)}</p>
+          <p><strong>Average Price Paid:</strong> $${avgPricePaid.toFixed(2)}</p>
+          <p><strong>Average Winning Bid:</strong> $${avgWinningBid.toFixed(2)}</p>
+        </div>
+
+        <div class="result-card">
+          <h4>Detailed Bidder Performance</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+              <thead>
+                <tr style="background: var(--bg-color-secondary);">
+                  <th style="padding: 10px; border: 1px solid var(--border-color);">Bidder</th>
+                  <th style="padding: 10px; border: 1px solid var(--border-color);">Strategy</th>
+                  <th style="padding: 10px; border: 1px solid var(--border-color);">Win %</th>
+                  <th style="padding: 10px; border: 1px solid var(--border-color);">Avg Payoff</th>
+                  <th style="padding: 10px; border: 1px solid var(--border-color);">Total Payoff</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+      
+      const userWinRate = (stats.bidderWins['user'] / numSimulations * 100).toFixed(1);
+      const userAvgPayoff = stats.totalPayoffs['user'] / numSimulations;
+      
+      html += `
+        <tr style="background: #e3f2fd; color: #0c5460;">
+          <td style="padding: 10px; border: 1px solid #dee2e6; font-weight: bold;">You</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">Human</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">${userWinRate}%</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6; font-weight: bold; color: ${userAvgPayoff >= 0 ? '#155724' : '#721c24'};">${userAvgPayoff.toFixed(2)}</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6; color: ${stats.totalPayoffs['user'] >= 0 ? '#155724' : '#721c24'};">${stats.totalPayoffs['user'].toFixed(2)}</td>
+        </tr>
+      `;
+      
+      for (let i = 0; i < numAI; i++) {
+        const aiKey = `ai${i + 1}`;
+        const aiWinRate = (stats.bidderWins[aiKey] / numSimulations * 100).toFixed(1);
+        const aiAvgPayoff = stats.totalPayoffs[aiKey] / numSimulations;
+        const strategy = strategies[document.getElementById(`ai-strategy-${i}`).value].name;
+        
+        html += `
+          <tr>
+            <td style="padding: 10px; border: 1px solid var(--border-color); font-weight: bold;">AI ${i + 1}</td>
+            <td style="padding: 10px; border: 1px solid var(--border-color);">${strategy}</td>
+            <td style="padding: 10px; border: 1px solid var(--border-color);">${aiWinRate}%</td>
+            <td style="padding: 10px; border: 1px solid var(--border-color); font-weight: bold; color: ${aiAvgPayoff >= 0 ? '#28a745' : '#dc3545'};">${aiAvgPayoff.toFixed(2)}</td>
+            <td style="padding: 10px; border: 1px solid var(--border-color); color: ${stats.totalPayoffs[aiKey] >= 0 ? '#28a745' : '#dc3545'};">${stats.totalPayoffs[aiKey].toFixed(2)}</td>
+          </tr>
+        `;
+      }
+      
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+    }
+
+    function updateAnalytics() {
+      const container = document.getElementById("analytics");
+      
+      if (simulationHistory.length === 0 && !bulkSimulationData) {
+        container.innerHTML = `<div class="result-card"><p>Run simulations to see performance analytics</p></div>`;
+        return;
+      }
+      
+      let html = `<div class="results-grid">`;
+      
+      html += `<div class="result-card"><h4>Single Game History</h4>`;
+      if (simulationHistory.length > 0) {
+        const userWins = simulationHistory.filter(s => s.winner.isUser).length;
+        const totalPayoff = simulationHistory.reduce((sum, s) => sum + s.userPayoff, 0);
+        const avgPayoff = totalPayoff / simulationHistory.length;
+        
+        html += `
+            <p><strong>Games Played:</strong> ${simulationHistory.length}</p>
+            <p><strong>Win Rate:</strong> ${((userWins / simulationHistory.length) * 100).toFixed(1)}%</p>
+            <p><strong>Total Payoff:</strong> $${totalPayoff.toFixed(2)}</p>
+            <p><strong>Average Payoff:</strong> $${avgPayoff.toFixed(2)}</p>
+        `;
+      } else {
+        html += `<p>No single games played yet.</p>`;
+      }
+      html += `</div>`;
+      
+      html += `<div class="result-card"><h4>Bulk Analysis Summary</h4>`;
+      if (bulkSimulationData) {
+        const bulkUserWinRate = (bulkSimulationData.bidderWins['user'] / 1000 * 100).toFixed(1);
+        const bulkUserAvgPayoff = bulkSimulationData.totalPayoffs['user'] / 1000;
+        
+        html += `
+            <p><strong>Last Bulk Run:</strong> 1000 games</p>
+            <p><strong>Bulk Win Rate:</strong> ${bulkUserWinRate}%</p>
+            <p><strong>Bulk Avg Payoff:</strong> $${bulkUserAvgPayoff.toFixed(2)}</p>
+        `;
+      } else {
+        html += `<p>No bulk analysis run yet.</p>`;
+      }
+      html += `</div>`;
+      
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // Initialize when page loads
+    window.onload = init;
+
+    // --- END OF SIMULATOR LOGIC ---
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
   if (typeof particlesJS !== 'undefined') {
     particlesJS('particles-js', {
       "particles": {
-        "number": { "value": 150 },
+        "number": { "value": 175 },
         "color": { "value": "#58a6ff" },
         "shape": { "type": "circle" },
         "opacity": { "value": 0.4 },
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const scrollY = window.scrollY;
         const particles = document.getElementById("particles-js");
         if (particles) {
-          particles.style.transform = `translateY(${scrollY * -0.2}px)`;
+          particles.style.transform = `translateY(${scrollY * -0.1}px)`;
         }
       });
     }, 1500); // Wait for entry effect to finish

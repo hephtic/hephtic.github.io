@@ -71,6 +71,7 @@ body {
   bottom: 0;
   right: 0;
   width: 100vw;
+  height: 100%vw; 
   min-width: 150%;
   min-height: 150%;
   z-index: -2;
@@ -79,6 +80,10 @@ body {
   transition: opacity 0.3s ease-in-out;
   animation: fadeFloatIn 1.5s ease-out;
   overflow: hidden
+}
+
+html {
+  height: 100%;   /* important so it grows with content */
 }
 
 .container {
@@ -405,6 +410,7 @@ table.reading-list {
   border-bottom: 1px solid var(--text-color) !important;
   background-color: transparent;
   color: var(--text-color);
+  table-layout: auto;
 }
 
 table.reading-list th,
@@ -419,6 +425,14 @@ table.reading-list td {
 
 table.reading-list thead {
   background-color: transparent !important;
+}
+
+.reading-list td:nth-child(3) {
+  font-size: 0.9em; /* smaller font for Notes */
+}
+
+.reading-list td:nth-child(3) ul {
+  font-size: 0.85em;
 }
 
 @media (max-width: 768px) {
@@ -486,7 +500,7 @@ table.reading-list thead {
 
 .simulation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr); /* Always 2 columns */
   gap: 1.5rem;
   margin-top: 2rem;
 }
@@ -690,4 +704,25 @@ html.dark #steps {
 
 #run-btn {
   cursor: pointer;
+}
+
+/* Smooth transition for dark/light mode changes */
+:root, body, input, select, textarea, button {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+/* Make all inputs, selects, textareas, and buttons use sidebar background */
+input, select, textarea, button {
+  background-color: var(--sidebar-bg);
+  color: var(--text-color-primary); /* Make sure text is visible on dark/light */
+  border: 1px solid var(--border-color); /* Optional: match borders */
+  border-radius: 6px; /* Optional: rounded edges */
+}
+
+/* Remove native dropdown arrow background on some browsers */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 25px; /* leave room for arrow */
 }

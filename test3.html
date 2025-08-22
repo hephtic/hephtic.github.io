@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Random Walk - Interactive Demo</title>
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #141b2d;
+      --surface: #1e2a42;
+      --surface-hover: #253655;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --accent-quantum: #3b82f6;
+      --accent-classical: #f59e0b;
+      --accent-quantum-light: rgba(59, 130, 246, 0.2);
+      --accent-classical-light: rgba(245, 158, 11, 0.2);
+      --border: #334155;
+      --grid: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent-quantum), var(--accent-classical));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    .plot-container {
+      position: relative;
+    }
+
+    .canvas {
+      width: 100%;
+      height: 500px;
+      background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .legend-color.quantum {
+      background: var(--accent-quantum);
+    }
+
+    .legend-color.classical {
+      background: var(--accent-classical);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .control-value {
+      color: var(--accent-quantum);
+      font-weight: 600;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 3px;
+      outline: none;
+      border: 1px solid var(--border);
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--accent-quantum);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--surface);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--accent-quantum);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--surface);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .select:focus {
+      outline: none;
+      border-color: var(--accent-quantum);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .button {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button:hover {
+      background: var(--surface-hover);
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button.primary {
+      background: var(--accent-quantum);
+      border-color: var(--accent-quantum);
+    }
+
+    .button.primary:hover {
+      background: #2563eb;
+    }
+
+    .info-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .info-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--accent-quantum);
+    }
+
+    .info-section p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .info-section code {
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      color: var(--accent-classical);
+    }
+
+    .step-indicator {
+      font-size: 14px;
+      color: var(--accent-quantum);
+      font-weight: 600;
+    }
+
+    .highlight-box {
+      background: var(--accent-quantum-light);
+      border: 1px solid var(--accent-quantum);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .highlight-box h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent-quantum);
+    }
+
+    .highlight-box p {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Quantum Random Walk</h1>
+      <p>Explore the difference between quantum and classical random walks. Watch how quantum interference creates ballistic spreading instead of classical diffusion.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Probability Distribution</h2>
+        <span class="step-indicator" id="stepCounter">Step: 0</span>
+      </div>
+      <div class="card-body">
+        <div class="plot-container">
+          <canvas id="plotCanvas" class="canvas"></canvas>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color quantum"></div>
+            <span>Quantum Walk</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color classical"></div>
+            <span>Classical Walk</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Controls</h2>
+      </div>
+      <div class="card-body">
+        <div class="controls-grid">
+          <div class="control-group">
+            <label class="control-label">
+              Steps
+              <span class="control-value" id="stepsValue">50</span>
+            </label>
+            <input type="range" class="slider" id="stepsSlider" min="0" max="100" value="50">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Coin Angle θ
+              <span class="control-value" id="thetaValue">45°</span>
+            </label>
+            <input type="range" class="slider" id="thetaSlider" min="0" max="90" value="45">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Initial Phase φ
+              <span class="control-value" id="phaseValue">0°</span>
+            </label>
+            <input type="range" class="slider" id="phaseSlider" min="0" max="360" value="0">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Initial Coin State</label>
+            <select class="select" id="initState">
+              <option value="plus">(|L⟩ + |R⟩)/√2</option>
+              <option value="minus">(|L⟩ - |R⟩)/√2</option>
+              <option value="left">|L⟩</option>
+              <option value="right">|R⟩</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Decoherence
+              <span class="control-value" id="decoherenceValue">0.00</span>
+            </label>
+            <input type="range" class="slider" id="decoherenceSlider" min="0" max="1" step="0.01" value="0">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Animation Speed
+              <span class="control-value" id="speedValue">50ms</span>
+            </label>
+            <input type="range" class="slider" id="speedSlider" min="10" max="200" value="50">
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="button primary" id="playBtn">▶ Play</button>
+          <button class="button" id="pauseBtn">⏸ Pause</button>
+          <button class="button" id="stepBtn">Step</button>
+          <button class="button" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="info-section">
+          <h3>What You're Seeing</h3>
+          <p>
+            The quantum walk evolves in a space combining position <code>|x⟩</code> and coin states <code>|L⟩, |R⟩</code>. 
+            Each step applies a coin rotation <code>C(θ)</code> followed by conditional shifts. 
+            Quantum interference creates <strong>ballistic spreading</strong> (σ ∼ n) with peaks at ±n cos(θ), 
+            unlike classical <strong>diffusive spreading</strong> (σ ∼ √n).
+          </p>
+
+          <div class="highlight-box">
+            <h4>Key Physics</h4>
+            <p>
+              <strong>θ = 0°:</strong> No mixing, walker stays put<br>
+              <strong>θ = 45°:</strong> Maximum quantum speedup<br>
+              <strong>θ = 90°:</strong> Complete mixing, different interference pattern<br>
+              <strong>Decoherence:</strong> Gradually destroys quantum interference
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Complex number arithmetic
+    class Complex {
+      constructor(real = 0, imag = 0) {
+        this.real = real;
+        this.imag = imag;
+      }
+
+      add(other) {
+        return new Complex(this.real + other.real, this.imag + other.imag);
+      }
+
+      multiply(other) {
+        if (typeof other === 'number') {
+          return new Complex(this.real * other, this.imag * other);
+        }
+        return new Complex(
+          this.real * other.real - this.imag * other.imag,
+          this.real * other.imag + this.imag * other.real
+        );
+      }
+
+      magnitude() {
+        return Math.sqrt(this.real * this.real + this.imag * this.imag);
+      }
+
+      magnitudeSquared() {
+        return this.real * this.real + this.imag * this.imag;
+      }
+
+      conjugate() {
+        return new Complex(this.real, -this.imag);
+      }
+
+      static fromPolar(magnitude, phase) {
+        return new Complex(magnitude * Math.cos(phase), magnitude * Math.sin(phase));
+      }
+    }
+
+    // Quantum Walker class
+    class QuantumWalker {
+      constructor(size = 201) {
+        this.size = size;
+        this.center = Math.floor(size / 2);
+        this.reset();
+      }
+
+      reset() {
+        this.psiLeft = new Array(this.size).fill(0).map(() => new Complex(0, 0));
+        this.psiRight = new Array(this.size).fill(0).map(() => new Complex(0, 0));
+        this.step = 0;
+      }
+
+      setInitialState(state, phase = 0) {
+        this.reset();
+        const sqrt2inv = 1 / Math.sqrt(2);
+        const phaseComplex = Complex.fromPolar(1, phase * Math.PI / 180);
+
+        switch (state) {
+          case 'left':
+            this.psiLeft[this.center] = new Complex(1, 0);
+            break;
+          case 'right':
+            this.psiRight[this.center] = new Complex(1, 0);
+            break;
+          case 'plus':
+            this.psiLeft[this.center] = new Complex(sqrt2inv, 0);
+            this.psiRight[this.center] = new Complex(sqrt2inv, 0).multiply(phaseComplex);
+            break;
+          case 'minus':
+            this.psiLeft[this.center] = new Complex(sqrt2inv, 0);
+            this.psiRight[this.center] = new Complex(-sqrt2inv, 0).multiply(phaseComplex);
+            break;
+        }
+      }
+
+      evolveOneStep(theta, decoherence = 0) {
+        const thetaRad = theta * Math.PI / 180;
+        const cos_theta = Math.cos(thetaRad);
+        const sin_theta = Math.sin(thetaRad);
+
+        const newPsiLeft = new Array(this.size).fill(0).map(() => new Complex(0, 0));
+        const newPsiRight = new Array(this.size).fill(0).map(() => new Complex(0, 0));
+
+        for (let x = 0; x < this.size; x++) {
+          const psiL = this.psiLeft[x];
+          const psiR = this.psiRight[x];
+
+          // Skip if no amplitude at this position
+          if (psiL.magnitudeSquared() + psiR.magnitudeSquared() < 1e-15) continue;
+
+          // Apply coin operation
+          let newL = psiL.multiply(cos_theta).add(psiR.multiply(sin_theta));
+          let newR = psiL.multiply(sin_theta).add(psiR.multiply(-cos_theta));
+
+          // Apply decoherence
+          if (decoherence > 0) {
+            // Phase damping model: mix with random phases
+            if (Math.random() < decoherence) {
+              const probL = newL.magnitudeSquared();
+              const probR = newR.magnitudeSquared();
+              
+              if (probL > 1e-15) {
+                const randomPhaseL = Math.random() * 2 * Math.PI;
+                newL = Complex.fromPolar(Math.sqrt(probL), randomPhaseL);
+              }
+              if (probR > 1e-15) {
+                const randomPhaseR = Math.random() * 2 * Math.PI;
+                newR = Complex.fromPolar(Math.sqrt(probR), randomPhaseR);
+              }
+            }
+          }
+
+          // Conditional shift
+          if (x > 0) {
+            newPsiLeft[x - 1] = newPsiLeft[x - 1].add(newL);
+          }
+          if (x < this.size - 1) {
+            newPsiRight[x + 1] = newPsiRight[x + 1].add(newR);
+          }
+        }
+
+        this.psiLeft = newPsiLeft;
+        this.psiRight = newPsiRight;
+        this.step++;
+
+        // Normalize
+        this.normalize();
+      }
+
+      normalize() {
+        let norm = 0;
+        for (let x = 0; x < this.size; x++) {
+          norm += this.psiLeft[x].magnitudeSquared() + this.psiRight[x].magnitudeSquared();
+        }
+        norm = Math.sqrt(norm);
+
+        if (norm > 1e-15) {
+          for (let x = 0; x < this.size; x++) {
+            this.psiLeft[x] = this.psiLeft[x].multiply(1 / norm);
+            this.psiRight[x] = this.psiRight[x].multiply(1 / norm);
+          }
+        }
+      }
+
+      getProbabilityDistribution() {
+        const probs = new Array(this.size);
+        for (let x = 0; x < this.size; x++) {
+          probs[x] = this.psiLeft[x].magnitudeSquared() + this.psiRight[x].magnitudeSquared();
+        }
+        return probs;
+      }
+    }
+
+    // Classical random walk for comparison
+    function getClassicalDistribution(steps, size, center) {
+      const probs = new Array(size).fill(0);
+      if (steps === 0) {
+        probs[center] = 1;
+        return probs;
+      }
+
+      // Use binomial distribution
+      for (let displacement = -steps; displacement <= steps; displacement += 2) {
+        const x = center + displacement;
+        if (x >= 0 && x < size) {
+          const k = (steps + displacement) / 2;
+          if (k >= 0 && k <= steps && k === Math.floor(k)) {
+            // Calculate binomial coefficient
+            let coeff = 1;
+            for (let i = 0; i < k; i++) {
+              coeff = coeff * (steps - i) / (i + 1);
+            }
+            probs[x] = coeff / Math.pow(2, steps);
+          }
+        }
+      }
+      return probs;
+    }
+
+    // Plotting class
+    class Plotter {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.setupCanvas();
+      }
+
+      setupCanvas() {
+        // Get the actual display size
+        const rect = this.canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Set the actual size in memory (scaled up for high DPI)
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        
+        // Scale the drawing context so everything draws at the correct size
+        this.ctx.scale(dpr, dpr);
+        
+        // Set the display size (CSS pixels)
+        this.canvas.style.width = rect.width + 'px';
+        this.canvas.style.height = rect.height + 'px';
+        
+        // Store actual drawing dimensions
+        this.drawWidth = rect.width;
+        this.drawHeight = rect.height;
+      }
+
+      plot(quantumProbs, classicalProbs, centerIndex) {
+        const ctx = this.ctx;
+        const width = this.drawWidth || this.canvas.clientWidth;
+        const height = this.drawHeight || this.canvas.clientHeight;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Set up plotting area with more space for the plot
+        const margin = { left: 80, right: 30, top: 30, bottom: 60 };
+        const plotWidth = width - margin.left - margin.right;
+        const plotHeight = height - margin.top - margin.bottom;
+
+        const displayHalfRange = 100;
+        const minX = Math.max(0, centerIndex - displayHalfRange);
+        const maxX = Math.min(quantumProbs.length - 1, centerIndex + displayHalfRange);
+        const displayRange = maxX - minX;
+
+        // Find maximum probability for scaling
+        let maxProb = 1e-10;
+        for (let i = minX; i <= maxX; i++) {
+          maxProb = Math.max(maxProb, quantumProbs[i], classicalProbs[i]);
+        }
+
+        // Draw grid
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        
+        // Horizontal grid lines
+        for (let i = 0; i <= 5; i++) {
+          const y = margin.top + (plotHeight * i) / 5;
+          ctx.moveTo(margin.left, y);
+          ctx.lineTo(margin.left + plotWidth, y);
+        }
+        
+        // Vertical grid lines - every 20 positions
+        for (let pos = minX; pos <= maxX; pos += 20) {
+          if ((pos - centerIndex) % 20 === 0) {
+            const x = margin.left + ((pos - minX) / displayRange) * plotWidth;
+            ctx.moveTo(x, margin.top);
+            ctx.lineTo(x, margin.top + plotHeight);
+          }
+        }
+        ctx.stroke();
+
+        // Draw axes
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(margin.left, margin.top);
+        ctx.lineTo(margin.left, margin.top + plotHeight);
+        ctx.lineTo(margin.left + plotWidth, margin.top + plotHeight);
+        
+        // Draw center line (x = 0)
+        const centerX = margin.left + ((centerIndex - minX) / displayRange) * plotWidth;
+        ctx.moveTo(centerX, margin.top);
+        ctx.lineTo(centerX, margin.top + plotHeight);
+        ctx.stroke();
+
+        // Draw classical distribution (smooth line)
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        let firstPoint = true;
+        for (let i = minX; i <= maxX; i++) {
+          const x = margin.left + ((i - minX) / displayRange) * plotWidth;
+          const y = margin.top + plotHeight - (classicalProbs[i] / maxProb) * plotHeight;
+          if (firstPoint) {
+            ctx.moveTo(x, y);
+            firstPoint = false;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.stroke();
+
+        // Draw quantum distribution (bars) - much thinner bars for better resolution
+        ctx.fillStyle = '#3b82f6';
+        const barWidth = plotWidth / displayRange;
+        for (let i = minX; i <= maxX; i++) {
+          if (quantumProbs[i] > 1e-15) {
+            const x = margin.left + ((i - minX) / displayRange) * plotWidth;
+            const barHeight = (quantumProbs[i] / maxProb) * plotHeight;
+            const y = margin.top + plotHeight - barHeight;
+            ctx.fillRect(x, y, Math.max(1, barWidth * 0.8), barHeight);
+          }
+        }
+
+        // Draw labels
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px -apple-system, system-ui';
+
+        // Y-axis labels
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i <= 5; i++) {
+          const y = margin.top + (plotHeight * i) / 5;
+          const value = (maxProb * (5 - i) / 5);
+          const label = value < 0.01 ? value.toExponential(1) : value.toFixed(3);
+          ctx.fillText(label, margin.left - 10, y);
+        }
+
+        // X-axis labels - every 20 positions
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        for (let pos = minX; pos <= maxX; pos += 20) {
+          if ((pos - centerIndex) % 20 === 0) {
+            const x = margin.left + ((pos - minX) / displayRange) * plotWidth;
+            const position = pos - centerIndex;
+            ctx.fillText(position.toString(), x, margin.top + plotHeight + 10);
+          }
+        }
+
+        // Axis titles
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '14px -apple-system, system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('Position', margin.left + plotWidth/2, height - 15);
+        
+        ctx.save();
+        ctx.translate(20, margin.top + plotHeight/2);
+        ctx.rotate(-Math.PI/2);
+        ctx.fillText('Probability', 0, 0);
+        ctx.restore();
+      }
+    }
+
+    // Main application
+    class QuantumWalkApp {
+      constructor() {
+        this.walker = new QuantumWalker(201);
+        this.plotter = new Plotter(document.getElementById('plotCanvas'));
+        this.animationId = null;
+        this.isPlaying = false;
+        
+        this.setupEventListeners();
+        this.updateAll();
+      }
+
+      setupEventListeners() {
+        // Sliders
+        document.getElementById('stepsSlider').addEventListener('input', () => this.updateSteps());
+        document.getElementById('thetaSlider').addEventListener('input', () => this.updateTheta());
+        document.getElementById('phaseSlider').addEventListener('input', () => this.updatePhase());
+        document.getElementById('decoherenceSlider').addEventListener('input', () => this.updateDecoherence());
+        document.getElementById('speedSlider').addEventListener('input', () => this.updateSpeed());
+        
+        // Select
+        document.getElementById('initState').addEventListener('change', () => this.updateInitState());
+        
+        // Buttons
+        document.getElementById('playBtn').addEventListener('click', () => this.play());
+        document.getElementById('pauseBtn').addEventListener('click', () => this.pause());
+        document.getElementById('stepBtn').addEventListener('click', () => this.singleStep());
+        document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+          this.plotter.setupCanvas();
+          this.render();
+        });
+      }
+
+      updateSteps() {
+        const steps = parseInt(document.getElementById('stepsSlider').value);
+        document.getElementById('stepsValue').textContent = steps.toString();
+        
+        if (!this.isPlaying) {
+          this.simulateToStep(steps);
+        }
+      }
+
+      updateTheta() {
+        const theta = parseInt(document.getElementById('thetaSlider').value);
+        document.getElementById('thetaValue').textContent = theta + '°';
+        
+        if (!this.isPlaying) {
+          const currentStep = this.walker.step;
+          this.simulateToStep(currentStep);
+        }
+      }
+
+      updatePhase() {
+        const phase = parseInt(document.getElementById('phaseSlider').value);
+        document.getElementById('phaseValue').textContent = phase + '°';
+        
+        if (!this.isPlaying) {
+          const currentStep = this.walker.step;
+          this.simulateToStep(currentStep);
+        }
+      }
+
+      updateDecoherence() {
+        const decoherence = parseFloat(document.getElementById('decoherenceSlider').value);
+        document.getElementById('decoherenceValue').textContent = decoherence.toFixed(2);
+        
+        if (!this.isPlaying) {
+          const currentStep = this.walker.step;
+          this.simulateToStep(currentStep);
+        }
+      }
+
+      updateSpeed() {
+        const speed = parseInt(document.getElementById('speedSlider').value);
+        document.getElementById('speedValue').textContent = speed + 'ms';
+      }
+
+      updateInitState() {
+        if (!this.isPlaying) {
+          const currentStep = this.walker.step;
+          this.simulateToStep(currentStep);
+        }
+      }
+
+      simulateToStep(targetStep) {
+        const initState = document.getElementById('initState').value;
+        const phase = parseInt(document.getElementById('phaseSlider').value);
+        const theta = parseInt(document.getElementById('thetaSlider').value);
+        const decoherence = parseFloat(document.getElementById('decoherenceSlider').value);
+
+        // Reset and set initial state
+        this.walker.setInitialState(initState, phase);
+
+        // Evolve to target step
+        for (let i = 0; i < targetStep; i++) {
+          this.walker.evolveOneStep(theta, decoherence);
+        }
+
+        this.render();
+      }
+
+      render() {
+        const quantumProbs = this.walker.getProbabilityDistribution();
+        const classicalProbs = getClassicalDistribution(this.walker.step, this.walker.size, this.walker.center);
+        
+        this.plotter.plot(quantumProbs, classicalProbs, this.walker.center);
+        
+        document.getElementById('stepCounter').textContent = `Step: ${this.walker.step}`;
+        document.getElementById('stepsSlider').value = this.walker.step.toString();
+        document.getElementById('stepsValue').textContent = this.walker.step.toString();
+      }
+
+      play() {
+        if (this.isPlaying) return;
+        
+        this.isPlaying = true;
+        const targetStep = parseInt(document.getElementById('stepsSlider').value);
+        const speed = parseInt(document.getElementById('speedSlider').value);
+        const theta = parseInt(document.getElementById('thetaSlider').value);
+        const decoherence = parseFloat(document.getElementById('decoherenceSlider').value);
+
+        const animate = () => {
+          if (!this.isPlaying || this.walker.step >= targetStep) {
+            this.isPlaying = false;
+            return;
+          }
+
+          this.walker.evolveOneStep(theta, decoherence);
+          this.render();
+
+          this.animationId = setTimeout(animate, speed);
+        };
+
+        // Start from current step
+        animate();
+      }
+
+      pause() {
+        this.isPlaying = false;
+        if (this.animationId) {
+          clearTimeout(this.animationId);
+          this.animationId = null;
+        }
+      }
+
+      singleStep() {
+        if (this.isPlaying) return;
+        
+        const theta = parseInt(document.getElementById('thetaSlider').value);
+        const decoherence = parseFloat(document.getElementById('decoherenceSlider').value);
+        
+        this.walker.evolveOneStep(theta, decoherence);
+        this.render();
+      }
+
+      reset() {
+        this.pause();
+        
+        const initState = document.getElementById('initState').value;
+        const phase = parseInt(document.getElementById('phaseSlider').value);
+        
+        this.walker.setInitialState(initState, phase);
+        this.render();
+        
+        // Reset steps slider to 0
+        document.getElementById('stepsSlider').value = '0';
+        document.getElementById('stepsValue').textContent = '0';
+      }
+
+      updateAll() {
+        this.updateSteps();
+        this.updateTheta();
+        this.updatePhase();
+        this.updateDecoherence();
+        this.updateSpeed();
+        this.reset();
+      }
+    }
+
+    // Initialize the application when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      new QuantumWalkApp();
+    });
+  </script>
+</body>
+</html>

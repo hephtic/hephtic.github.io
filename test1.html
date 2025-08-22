@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholas Tan - Information Theory Simulation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Information Theory Demo Styles -->
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --text-primary: #333;
+      --text-muted: #666;
+      --border: #e1e5e9;
+      --accent: #007bff;
+      --accent-dark: #0056b3;
+    }
+    
+    .dark {
+      --bg-primary: #121722;
+      --bg-secondary: #0b0e14;
+      --text-primary: #e5ecff;
+      --text-muted: #9fb0c3;
+      --border: #1b2333;
+      --accent: #6ea8fe;
+      --accent-dark: #5c9cfd;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .dark body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 1rem;
+    }
+    
+    .intro-text {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    .info-theory-demo {
+      margin-top: 2rem;
+      width: 100%;
+    }
+    
+    .demo-wrapper {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    
+    @media (max-width: 1000px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+    
+    .demo-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .demo-card h3 {
+      margin: 0 0 1rem;
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .control-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    
+    .control-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    
+    .control-input {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      height: 8px;
+      background: var(--border);
+      border-radius: 5px;
+      outline: none;
+      appearance: none;
+    }
+    
+    .control-input::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .number-input {
+      width: 80px;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    
+    .demo-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: linear-gradient(45deg, var(--accent), var(--accent-dark));
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    }
+    
+    .demo-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+    }
+    
+    .demo-select {
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: var(--text-primary);
+    }
+    
+    .legend {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0.5rem 0;
+      font-weight: 600;
+    }
+    
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
+    
+    .dot-a { background: #6ea8fe; }
+    .dot-b { background: #60d394; }
+    .dot-c { background: #ff6b6b; }
+    
+    .efficiency-bar {
+      display: flex;
+      height: 32px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .efficiency-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .data-segment { background: linear-gradient(45deg, #6ea8fe, #5c9cfd); }
+    .redundancy-segment { background: linear-gradient(45deg, #ffb454, #ffa726); }
+    
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    
+    .scenario-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .scenario-card.winner {
+      border-color: #60d394;
+      background: rgba(96, 211, 148, 0.1);
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(96, 211, 148, 0.3);
+    }
+    
+    .preview-text {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      background: var(--bg-secondary);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      word-break: break-all;
+      max-height: 80px;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+    
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+    
+    .chart-container {
+      margin: 1rem 0;
+      height: 200px;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 0.5rem;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    
+    .experiment-tip {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+      border-left: 4px solid var(--accent);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    
+    .dark .experiment-tip {
+      background: rgba(18, 23, 34, 0.95);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-wave-square"></i> Information Theory Explorer</h1>
+      <p class="intro-text">
+        Discover the fundamental trade-offs between <strong>compression efficiency</strong> and <strong>error resilience</strong> in data transmission
+      </p>
+    </header>
+    
+    <main>
+      <div class="info-theory-demo">
+        <div class="demo-wrapper">
+          <div class="demo-grid">
+            <!-- Controls Panel -->
+            <div class="demo-card">
+              <h3><i class="fas fa-cog"></i> Controls & Configuration</h3>
+              
+              <h4 style="margin-top: 1.5rem;">📝 1. Source & Message</h4>
+              <div class="control-row">
+                <div class="control-label">
+                  Message length (symbols)
+                  <span id="msgLenDisplay">200</span>
+                </div>
+                <input id="msgLen" type="range" min="20" max="800" step="10" value="200" class="control-input"/>
+              </div>
+
+              <div class="control-group">
+                <div>
+                  <div class="control-label">p(A) <span id="pADisplay">0.70</span></div>
+                  <input id="pA" type="range" min="0" max="1" step="0.01" value="0.7" class="control-input"/>
+                </div>
+                <div>
+                  <div class="control-label">p(B) <span id="pBDisplay">0.20</span></div>
+                  <input id="pB" type="range" min="0" max="1" step="0.01" value="0.2" class="control-input"/>
+                </div>
+              </div>
+
+              <div class="legend">
+                <span><span class="legend-dot dot-a"></span> A: <span id="pAOut">0.70</span></span>
+                <span><span class="legend-dot dot-b"></span> B: <span id="pBOut">0.20</span></span>
+                <span><span class="legend-dot dot-c"></span> C: <span id="pCOut">0.10</span></span>
+              </div>
+
+              <button class="demo-button" id="genMsg"><i class="fas fa-dice"></i> Generate Message</button>
+
+              <hr class="divider"/>
+
+              <h4>🔧 2. Source Coding</h4>
+              <div class="control-row">
+                <div class="control-label">Coding scheme</div>
+                <select id="sourceCoding" class="demo-select">
+                  <option value="fixed">Fixed-length (⌈log₂|Σ|⌉ bits)</option>
+                  <option value="huffman" selected>Huffman (optimal prefix)</option>
+                </select>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-label">Entropy H(X)</div>
+                  <div class="metric-value" id="entropyOut">0.000</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Avg length</div>
+                  <div class="metric-value" id="avgLenOut">0.000</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Compression</div>
+                  <div class="metric-value" id="compressionOut">—</div>
+                </div>
+              </div>
+
+              <hr class="divider"/>
+
+              <h4>📡 3. Channel & Error Correction</h4>
+              <div class="control-row">
+                <div class="control-label">
+                  Channel noise (bit flip probability)
+                  <span id="flipPDisplay">0.050</span>
+                </div>
+                <input id="flipP" type="range" min="0" max="0.3" step="0.005" value="0.05" class="control-input"/>
+              </div>
+
+              <div class="control-row">
+                <div class="control-label">Error correction</div>
+                <select id="redundancy" class="demo-select">
+                  <option value="none" selected>None (raw transmission)</option>
+                  <option value="rep3">Repetition ×3 (majority vote)</option>
+                </select>
+              </div>
+
+              <button class="demo-button" id="runSim"><i class="fas fa-rocket"></i> Transmit Message</button>
+
+              <div class="control-row" style="margin-top: 1rem;">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">📊 Bandwidth Usage</div>
+                <div class="efficiency-bar">
+                  <div class="efficiency-segment data-segment" id="dataSegment" style="width: 70%;">Data</div>
+                  <div class="efficiency-segment redundancy-segment" id="redundancySegment" style="width: 30%;">Protection</div>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                  Blue = Information | Orange = Error Protection
+                </div>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-label">Original bits</div>
+                  <div class="metric-value" id="encodedBitsOut">0</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Transmitted</div>
+                  <div class="metric-value" id="txBitsOut">0</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Overhead</div>
+                  <div class="metric-value" id="redFactorOut">1.00×</div>
+                </div>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-label">Errors in</div>
+                  <div class="metric-value" id="berRawOut">0.000</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Errors out</div>
+                  <div class="metric-value" id="berDecOut">0.000</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Quality</div>
+                  <div class="metric-value" id="qualityOut">Perfect</div>
+                </div>
+              </div>
+
+              <div class="control-row">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">⚖️ Trade-off Analysis</div>
+                <div class="scenario-grid">
+                  <div class="scenario-card" id="noRedundancyScenario">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">No Redundancy</div>
+                    <div style="font-size: 0.8rem;">
+                      <div>📦 Bandwidth: <span id="noRedBandwidth">100%</span></div>
+                      <div>🎯 Reliability: <span id="noRedReliability">Good</span></div>
+                      <div>💰 Cost: <span style="color: #60d394;">Cheap</span></div>
+                    </div>
+                  </div>
+                  <div class="scenario-card" id="withRedundancyScenario">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">With Redundancy</div>
+                    <div style="font-size: 0.8rem;">
+                      <div>📦 Bandwidth: <span id="withRedBandwidth">300%</span></div>
+                      <div>🎯 Reliability: <span id="withRedReliability">High</span></div>
+                      <div>💰 Cost: <span style="color: #ffb454;">Expensive</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                  <span id="tradeoffWinner">💡 The winner depends on your priorities!</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visualization Panel -->
+            <div class="demo-card">
+              <h3><i class="fas fa-chart-line"></i> Real-time Visualization</h3>
+              
+              <div class="chart-container">
+                <canvas id="distChart"></canvas>
+              </div>
+              
+              <div class="chart-container">
+                <canvas id="lenChart"></canvas>
+              </div>
+              
+              <div class="chart-container">
+                <canvas id="tradeoffChart"></canvas>
+              </div>
+
+              <div class="control-row" style="margin-top: 1.5rem;">
+                <div class="metric-card">
+                  <div class="metric-label">Original message (first 60 symbols)</div>
+                  <div class="preview-text" id="msgPreview">Click "Generate Message" to start</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Encoded bits (first 120)</div>
+                  <div class="preview-text" id="bitsPreview">Generate a message first</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">Transmission result</div>
+                  <div class="metric-value" id="transmissionResult">Ready to transmit</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="experiment-tip">
+        <strong>🧪 Experiment Suggestions:</strong><br>
+        • Try a skewed distribution (A=0.8, B=0.15) with Huffman coding<br>
+        • Add noise (0.1+) and compare "No Redundancy" vs "Repetition ×3"<br>
+        • See how the fundamental trade-off between efficiency and reliability plays out!
+      </div>
+    </main>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Dark Mode">
+    <i id="theme-icon" class="fas fa-moon"></i>
+  </button>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  
+  <script>
+    // ---------- Utilities ----------
+    const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+    const fmt = (x, d=3) => (typeof x === 'number' ? x.toFixed(d) : '—');
+
+    function entropy(probs) {
+      let H = 0;
+      for (const p of probs) if (p > 0) H -= p * Math.log2(p);
+      return H;
+    }
+
+    // Huffman coding implementation
+    function buildHuffman(probMap) {
+      const nodes = Object.entries(probMap).map(([sym, p]) => ({ sym, p }));
+      if (nodes.length === 1) {
+        return { codes: { [nodes[0].sym]: '0' }, avgLen: 1 };
+      }
+      let forest = nodes.map((n,i)=>({ id: 'n'+i, p: n.p, sym: n.sym, left:null, right:null }));
+      let nextId = forest.length;
+      function popMin(arr){
+        let idx = 0; for (let i=1;i<arr.length;i++) if (arr[i].p < arr[idx].p) idx = i;
+        return arr.splice(idx,1)[0];
+      }
+      while (forest.length > 1) {
+        const a = popMin(forest); const b = popMin(forest);
+        forest.push({ id:'n'+(nextId++), p:a.p+b.p, left:a, right:b, sym:null });
+      }
+      const root = forest[0];
+      const codes = {};
+      (function dfs(node, prefix=''){
+        if (!node) return;
+        if (node.sym !== null && node.sym !== undefined) { codes[node.sym] = prefix || '0'; return; }
+        dfs(node.left, prefix+'0');
+        dfs(node.right, prefix+'1');
+      })(root);
+      let avgLen = 0; for (const [s,p] of Object.entries(probMap)) avgLen += p * codes[s].length;
+      return { codes, avgLen };
+    }
+
+    function encodeMessage(msg, codes) {
+      let bits = '';
+      for (const s of msg) bits += codes[s];
+      return bits;
+    }
+
+    function fixedCodes(alphabet) {
+      const k = Math.ceil(Math.log2(alphabet.length));
+      const codes = {};
+      for (let i=0;i<alphabet.length;i++) {
+        codes[alphabet[i]] = i.toString(2).padStart(k,'0');
+      }
+      return { codes, k };
+    }
+
+    // Redundancy encoders / decoders
+    function addRedundancy(bits, scheme) {
+      if (scheme === 'none') return { tx: bits, factor: 1 };
+      if (scheme === 'rep3') {
+        let out = '';
+        for (const b of bits) out += b.repeat(3);
+        return { tx: out, factor: 3 };
+      }
+      return { tx: bits, factor: 1 };
+    }
+
+    function removeRedundancy(rxBits, scheme) {
+      if (scheme === 'none') return { bits: rxBits };
+      if (scheme === 'rep3') {
+        let rec = '';
+        for (let i=0; i<rxBits.length; i+=3) {
+          const grp = rxBits.slice(i,i+3);
+          const ones = [...grp].filter(c=>c==='1').length;
+          rec += (ones >= 2) ? '1' : '0';
+        }
+        return { bits: rec };
+      }
+      return { bits: rxBits };
+    }
+
+    function flipBits(bits, p) {
+      let out = '';
+      for (const b of bits) {
+        const flip = Math.random() < p;
+        out += flip ? (b === '1' ? '0' : '1') : b;
+      }
+      return out;
+    }
+
+    function bitErrorRate(a, b) {
+      const n = Math.min(a.length, b.length);
+      if (n === 0) return 0;
+      let diff = 0; for (let i=0;i<n;i++) if (a[i] !== b[i]) diff++;
+      return diff / n;
+    }
+
+    // ---------- State ----------
+    const alphabet = ['A','B','C'];
+    let probs = [0.7, 0.2, 0.1];
+    let message = [];
+    let encBits = '';
+
+    // ---------- DOM Elements ----------
+    const msgLen = document.getElementById('msgLen');
+    const msgLenDisplay = document.getElementById('msgLenDisplay');
+    const pA = document.getElementById('pA');
+    const pB = document.getElementById('pB');
+    const pADisplay = document.getElementById('pADisplay');
+    const pBDisplay = document.getElementById('pBDisplay');
+    const pAOut = document.getElementById('pAOut');
+    const pBOut = document.getElementById('pBOut');
+    const pCOut = document.getElementById('pCOut');
+    const genMsg = document.getElementById('genMsg');
+
+    const sourceCoding = document.getElementById('sourceCoding');
+    const entropyOut = document.getElementById('entropyOut');
+    const avgLenOut = document.getElementById('avgLenOut');
+    const compressionOut = document.getElementById('compressionOut');
+
+    const flipP = document.getElementById('flipP');
+    const flipPDisplay = document.getElementById('flipPDisplay');
+    const redundancy = document.getElementById('redundancy');
+    const runSim = document.getElementById('runSim');
+
+    const encodedBitsOut = document.getElementById('encodedBitsOut');
+    const txBitsOut = document.getElementById('txBitsOut');
+    const redFactorOut = document.getElementById('redFactorOut');
+    const berRawOut = document.getElementById('berRawOut');
+    const berDecOut = document.getElementById('berDecOut');
+    const qualityOut = document.getElementById('qualityOut');
+    const transmissionResult = document.getElementById('transmissionResult');
+
+    const msgPreview = document.getElementById('msgPreview');
+    const bitsPreview = document.getElementById('bitsPreview');
+
+    // Chart contexts
+    const distCtx = document.getElementById('distChart').getContext('2d');
+    const lenCtx = document.getElementById('lenChart').getContext('2d');
+    const tradeoffCtx = document.getElementById('tradeoffChart').getContext('2d');
+
+    // ---------- Charts ----------
+    const distChart = new Chart(distCtx, {
+      type: 'bar',
+      data: {
+        labels: alphabet,
+        datasets: [{ 
+          label: 'Probability', 
+          data: probs,
+          backgroundColor: ['#6ea8fe', '#60d394', '#ff6b6b']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { display: false },
+          title: { display: true, text: 'Symbol Distribution' }
+        },
+        scales: { 
+          y: { min: 0, max: 1 },
+          x: { }
+        }
+      }
+    });
+
+    const lenChart = new Chart(lenCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Entropy H', 'Chosen Method', 'Fixed Length'],
+        datasets: [{ 
+          label: 'Bits per symbol', 
+          data: [0,0,0],
+          backgroundColor: ['#ffb454', '#6ea8fe', '#9fb0c3']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { display: false },
+          title: { display: true, text: 'Coding Efficiency' }
+        },
+        scales: { 
+          y: { beginAtZero: true, max: 3 }
+        }
+      }
+    });
+
+    const tradeoffChart = new Chart(tradeoffCtx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Current Settings',
+          data: [],
+          backgroundColor: '#6ea8fe',
+          pointRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { display: false },
+          title: { display: true, text: 'Efficiency vs Reliability Trade-off' }
+        },
+        scales: {
+          x: { 
+            title: { display: true, text: 'Bandwidth Efficiency (%)' },
+            min: 0, max: 100
+          },
+          y: { 
+            title: { display: true, text: 'Error Rate (%)' },
+            min: 0, max: 30
+          }
+        }
+      }
+    });
+
+    // ---------- Event Listeners ----------
+    msgLen.addEventListener('input', () => {
+      msgLenDisplay.textContent = msgLen.value;
+    });
+
+    pA.addEventListener('input', updateProbs);
+    pB.addEventListener('input', updateProbs);
+    
+    function updateProbs() {
+      const pa = parseFloat(pA.value);
+      const pb = parseFloat(pB.value);
+      const pc = clamp(1 - pa - pb, 0, 1);
+      
+      if (pa + pb > 1) {
+        const scale = 1 / (pa + pb);
+        pA.value = (pa * scale).toFixed(2);
+        pB.value = (pb * scale).toFixed(2);
+        probs = [pa * scale, pb * scale, 1 - (pa * scale + pb * scale)];
+      } else {
+        probs = [pa, pb, pc];
+      }
+      
+      pADisplay.textContent = probs[0].toFixed(2);
+      pBDisplay.textContent = probs[1].toFixed(2);
+      pAOut.textContent = probs[0].toFixed(2);
+      pBOut.textContent = probs[1].toFixed(2);
+      pCOut.textContent = probs[2].toFixed(2);
+      
+      updateDistChart();
+      updateCodingMetrics();
+    }
+
+    flipP.addEventListener('input', () => {
+      flipPDisplay.textContent = parseFloat(flipP.value).toFixed(3);
+    });
+
+    genMsg.addEventListener('click', generateMessage);
+    runSim.addEventListener('click', runTransmission);
+    sourceCoding.addEventListener('change', updateCodingMetrics);
+
+    // ---------- Main Functions ----------
+    function generateMessage() {
+      const n = parseInt(msgLen.value);
+      message = [];
+      
+      for (let i = 0; i < n; i++) {
+        const r = Math.random();
+        if (r < probs[0]) message.push('A');
+        else if (r < probs[0] + probs[1]) message.push('B');
+        else message.push('C');
+      }
+      
+      msgPreview.textContent = message.slice(0, 60).join('') + (message.length > 60 ? '...' : '');
+      updateCodingMetrics();
+    }
+
+    function updateDistChart() {
+      distChart.data.datasets[0].data = [...probs];
+      distChart.update();
+    }
+
+    function updateCodingMetrics() {
+      if (message.length === 0) return;
+      
+      const H = entropy(probs);
+      entropyOut.textContent = fmt(H);
+      
+      const probMap = { A: probs[0], B: probs[1], C: probs[2] };
+      
+      let codes, avgLen;
+      if (sourceCoding.value === 'huffman') {
+        const result = buildHuffman(probMap);
+        codes = result.codes;
+        avgLen = result.avgLen;
+      } else {
+        const result = fixedCodes(alphabet);
+        codes = result.codes;
+        avgLen = result.k;
+      }
+      
+      encBits = encodeMessage(message, codes);
+      avgLenOut.textContent = fmt(avgLen);
+      
+      const fixedLen = Math.ceil(Math.log2(alphabet.length));
+      const compression = ((fixedLen - avgLen) / fixedLen * 100);
+      compressionOut.textContent = compression > 0 ? `${fmt(compression, 1)}%` : '0%';
+      
+      bitsPreview.textContent = encBits.slice(0, 120) + (encBits.length > 120 ? '...' : '');
+      
+      // Update length comparison chart
+      lenChart.data.datasets[0].data = [H, avgLen, fixedLen];
+      lenChart.update();
+      
+      updateBandwidthBar();
+    }
+
+    function runTransmission() {
+      if (!encBits) {
+        transmissionResult.textContent = 'Generate message first!';
+        return;
+      }
+      
+      const flipProb = parseFloat(flipP.value);
+      const redScheme = redundancy.value;
+      
+      // Add redundancy
+      const { tx: txBits, factor: redFactor } = addRedundancy(encBits, redScheme);
+      
+      // Simulate channel noise
+      const rxBits = flipBits(txBits, flipProb);
+      
+      // Remove redundancy / error correction
+      const { bits: decBits } = removeRedundancy(rxBits, redScheme);
+      
+      // Calculate metrics
+      const berRaw = bitErrorRate(encBits, rxBits.slice(0, encBits.length));
+      const berDec = bitErrorRate(encBits, decBits);
+      
+      // Update displays
+      encodedBitsOut.textContent = encBits.length;
+      txBitsOut.textContent = txBits.length;
+      redFactorOut.textContent = `${redFactor.toFixed(2)}×`;
+      berRawOut.textContent = fmt(berRaw * 100, 1) + '%';
+      berDecOut.textContent = fmt(berDec * 100, 1) + '%';
+      
+      // Quality assessment
+      let quality;
+      if (berDec === 0) quality = 'Perfect';
+      else if (berDec < 0.01) quality = 'Excellent';
+      else if (berDec < 0.05) quality = 'Good';
+      else if (berDec < 0.1) quality = 'Fair';
+      else quality = 'Poor';
+      qualityOut.textContent = quality;
+      
+      // Transmission result
+      const improvement = berRaw > 0 ? ((berRaw - berDec) / berRaw * 100) : 0;
+      if (berDec === 0 && berRaw === 0) {
+        transmissionResult.textContent = '✅ Perfect transmission!';
+      } else if (berDec === 0) {
+        transmissionResult.textContent = '🛡️ All errors corrected!';
+      } else if (improvement > 50) {
+        transmissionResult.textContent = `📈 ${fmt(improvement, 0)}% error reduction`;
+      } else if (improvement > 0) {
+        transmissionResult.textContent = `📉 ${fmt(improvement, 0)}% improvement`;
+      } else {
+        transmissionResult.textContent = '⚠️ Errors remain';
+      }
+      
+      updateTradeoffAnalysis(redFactor, berDec, flipProb);
+      updateTradeoffChart(redFactor, berDec);
+    }
+
+    function updateBandwidthBar() {
+      const redScheme = redundancy.value;
+      let factor = 1;
+      if (redScheme === 'rep3') factor = 3;
+      
+      const dataPercent = (1 / factor) * 100;
+      const redPercent = 100 - dataPercent;
+      
+      const dataSegment = document.getElementById('dataSegment');
+      const redSegment = document.getElementById('redundancySegment');
+      
+      dataSegment.style.width = `${dataPercent}%`;
+      redSegment.style.width = `${redPercent}%`;
+      
+      if (redPercent < 5) {
+        redSegment.style.display = 'none';
+      } else {
+        redSegment.style.display = 'flex';
+      }
+    }
+
+    function updateTradeoffAnalysis(redFactor, berDec, flipProb) {
+      const noRedCard = document.getElementById('noRedundancyScenario');
+      const withRedCard = document.getElementById('withRedundancyScenario');
+      const winner = document.getElementById('tradeoffWinner');
+      
+      // Calculate scenarios
+      const noRedBandwidth = '100%';
+      const withRedBandwidth = `${(redFactor * 100).toFixed(0)}%`;
+      
+      const noRedReliability = flipProb === 0 ? 'Perfect' : 
+                              flipProb < 0.05 ? 'Good' : 
+                              flipProb < 0.1 ? 'Fair' : 'Poor';
+      const withRedReliability = berDec === 0 ? 'Perfect' : 
+                                 berDec < 0.01 ? 'Excellent' : 
+                                 berDec < 0.05 ? 'Good' : 'Fair';
+      
+      // Update displays
+      document.getElementById('noRedBandwidth').textContent = noRedBandwidth;
+      document.getElementById('withRedBandwidth').textContent = withRedBandwidth;
+      document.getElementById('noRedReliability').textContent = noRedReliability;
+      document.getElementById('withRedReliability').textContent = withRedReliability;
+      
+      // Determine winner
+      noRedCard.classList.remove('winner');
+      withRedCard.classList.remove('winner');
+      
+      if (flipProb < 0.01) {
+        noRedCard.classList.add('winner');
+        winner.textContent = '🏆 Low noise: Efficiency wins!';
+      } else if (flipProb > 0.1) {
+        withRedCard.classList.add('winner');
+        winner.textContent = '🛡️ High noise: Reliability wins!';
+      } else {
+        winner.textContent = '⚖️ Trade-off depends on priorities!';
+      }
+    }
+
+    function updateTradeoffChart(redFactor, berDec) {
+      const efficiency = (1 / redFactor) * 100;
+      const errorRate = berDec * 100;
+      
+      tradeoffChart.data.datasets[0].data = [{ x: efficiency, y: errorRate }];
+      tradeoffChart.update();
+    }
+
+    // ---------- Theme Toggle ----------
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    let isDark = false;
+
+    themeToggle.addEventListener('click', () => {
+      isDark = !isDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      
+      // Update chart colors for theme
+      const textColor = isDark ? '#e5ecff' : '#333';
+      const gridColor = isDark ? '#1b2333' : '#e1e5e9';
+      
+      [distChart, lenChart, tradeoffChart].forEach(chart => {
+        chart.options.plugins.title.color = textColor;
+        chart.options.scales.x.ticks = { color: textColor };
+        chart.options.scales.y.ticks = { color: textColor };
+        chart.options.scales.x.grid = { color: gridColor };
+        chart.options.scales.y.grid = { color: gridColor };
+        if (chart.options.scales.x.title) chart.options.scales.x.title.color = textColor;
+        if (chart.options.scales.y.title) chart.options.scales.y.title.color = textColor;
+        chart.update();
+      });
+    });
+
+    // ---------- Initialize ----------
+    updateProbs();
+    generateMessage();
+    updateBandwidthBar();
+    
+    // Add some initial data to the trade-off chart
+    updateTradeoffChart(1, 0);
+  </script>
+</body>
+</html>

@@ -16,6 +16,23 @@
     document.documentElement.classList.remove('dark');
   }
 </script>
+<style>.mobile-warning {
+  display: none; /* hidden by default */
+  background: #f87171; /* red background */
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* Show only on screens narrower than 768px (mobile) */
+@media (max-width: 768px) {
+  .mobile-warning {
+    display: block;
+  }
+}</style>
 </head>
 <body>
   <!-- Particles Background -->
@@ -29,7 +46,7 @@
     <li><a href="projects.html"><i class="fas fa-diagram-project"></i><span>Projects</span></a></li>
     <li><a href="simulations.html"><i class="fas fa-computer"></i><span>Simulations</span></a></li>
     <li><a href="reading-list.html"><i class="fas fa-book-open-reader"></i><span>Reading List</span></a></li>
-    <li><a href="blog.html"><i class="fas fa-pen-nib"></i><span>Blog</span></a></li>
+    <li><a href="notes.html"><i class="fas fa-file-alt"></i><span>Notes</span></a></li>
     <li><a href="about.html"><i class="fas fa-circle-info"></i><span>About</span></a></li>
   </ul>
 </nav>
@@ -40,14 +57,37 @@
       <header>
         <h1>Simulations</h1>
       </header>
+      <div class="mobile-warning">
+  ⚠️ WARNING: These pages are best viewed on desktop. Some features may not work properly on mobile. ⚠️
+    </div>
       <main>
-  <p style="text-indent: 20px;">Explore some interesting mathematical simulations. Click a box to open the full simulation.</p>
+  <p style="text-indent: 20px;">Explore some interesting mathematical simulations. These contain varying concepts that I have found interesting and/or illuminating. Click a box to open the full simulation.</p>
 
   <div class="simulation-grid">
 
-    <a href="simulations/random-walk.html" class="simulation-card">
-      <h2>Random Walk Recurrence</h2>
-      <p>Explore recurrence and transience of random walks in 1D, 2D, and 3D.</p>
+    <a href="simulations/quantum-walk.html" class="simulation-card">
+      <h2>Quantum Random Walk</h2>
+      <p>Simulate quantum random walks in 1D; compare them to classical random walks.</p>
+    </a>
+
+    <a href="simulations/covering-spaces.html" class="simulation-card">
+      <h2>Covering Spaces Visualization</h2>
+      <p>A brief, visual introduction to covering spaces and Topology.</p>
+    </a>
+
+    <a href="simulations/entropy-encoding.html" class="simulation-card">
+      <h2>Entropy Encoding and Redundance</h2>
+      <p>An interactive introduction to encoding and Information Theory.</p>
+    </a>   
+    
+    <a href="simulations/fractional-brownian-motion.html" class="simulation-card">
+      <h2>Fractional Brownian Motion</h2>
+      <p>Simulate fBM with varying Hurst coefficients.</p>
+    </a>
+
+    <a href="simulations/auction-theory.html" class="simulation-card">
+      <h2>Auction Theory Simulation</h2>
+      <p>Simulate and bid in varying auctions against different strategies.</p>
     </a>
 
     <a href="simulations/fourier-series.html" class="simulation-card">
@@ -55,16 +95,18 @@
       <p>Visualize how Fourier series approximate functions with partial sums.</p>
     </a>
 
+    <a href="simulations/random-walk.html" class="simulation-card">
+      <h2>Random Walk Recurrence</h2>
+      <p>Explore recurrence and transience of random walks in 1D, 2D, and 3D.</p>
+    </a>    
+
     <a href="simulations/buffons-needle.html" class="simulation-card">
       <h2>Buffon's Needle Simulation</h2>
       <p>Simulate needle drops to estimate 𝜋 with Monte Carlo sampling.</p>
     </a>
     
-    <a href="simulations/fractional-brownian-motion.html" class="simulation-card">
-      <h2>Fractional Brownian Motion</h2>
-      <p>Simulate fBM with varying Hurst coefficients.</p>
-    </a>
-
+    
+    
     <!--
     <a href="another-simulation.html" class="simulation-card">
       <h2>Another Simulation</h2>
@@ -95,7 +137,8 @@
 <div id="mobile-menu" class="mobile-menu">
   <a href="index.html">Home</a>
   <a href="projects.html">Projects</a>
-  <a href="blog.html">Blog</a>
+  <a href="simulations.html">Simulations</a>
+  <a href="notes.html">Notes</a>
   <a href="reading-list.html">Reading List</a>
   <a href="about.html">About</a>
 </div>
