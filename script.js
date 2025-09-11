@@ -211,30 +211,36 @@ function initGraph() {
   const nodes = new vis.DataSet([
   {
     id: 1,
-    label: "Polymarket \nData Analysis",
-    description: "Scraper and analysis toolkit for Polymarket trade, comment, and price data. Enables large-scale prediction market research.",
+    label: "Polymarket",
+    description: "Scraper and analysis toolkit for Polymarket trade, comment, and price data. Enables large-scale prediction market research. Engineered a large scale Pnl Engine.",
     url: "https://github.com/hephtic/blank"
   },
-  {
+    {
     id: 2,
+    label: "GARCH \nand \nStochastic \nVolatility",
+    description: "Analysis of the theoretical and empirical gap between discrete models and continuous stochastic volatility frameworks.",
+    url: "https://github.com/hephtic/empty"
+  },
+  {
+    id: 3,
     label: "Income \nFactors",
     description: "Analyzes wage data using regression, decomposition, unsupervised learning, Bayesian inference to reveal deeper patterns in labor market structure.",
     url: "https://github.com/hephtic/usa_income"
   },
   {
-    id: 3,
+    id: 4,
     label: "Unemployment \nRecovery",
     description: "Quantile regressions explore the role of education in U.S. county-level unemployment recovery after COVID.",
     url: "https://github.com/hephtic/unemployment-education-recovery-analysis"
   },
   {
-    id: 4,
+    id: 5,
     label: "Sticky \nInflation",
     description: "Decomposes CPI data to analyze sticky inflation and constructs a housing inflation tracker using Zillow data.",
     url: "https://github.com/hephtic/sticky-analysis"
   },
   {
-    id: 5,
+    id: 6,
     label: "Game Theory \nSimulation",
     description: "Agent-based simulation of public goods games with punishment and mutation; identifies cooperation regimes.",
     url: "https://github.com/hephtic/game_theory"
@@ -244,19 +250,21 @@ function initGraph() {
   // Create edges
   const edges = new vis.DataSet([
   // Data-heavy and API-focused connection
-  { id: 1, from: 1, to: 2 }, // Polymarket ↔ Income Factors (both use large datasets, regression/ML)
+  { id: 1, from: 1, to: 3 }, // Polymarket ↔ Income Factors (both use large datasets, regression/ML)
+
+  { id: 2, from: 1, to: 2 }, // Polymarket to Fin Time series
 
   // Policy & labor-related
-  { id: 2, from: 2, to: 3 }, // Income Factors ↔ Unemployment Recovery (labor economics)
+  { id: 3, from: 3, to: 4 }, // Income Factors ↔ Unemployment Recovery (labor economics)
 
   // COVID recovery to inflation (macroeconomic link)
-  { id: 3, from: 3, to: 4 }, // Unemployment Recovery ↔ Sticky Inflation
+  { id: 4, from: 4, to: 5 }, // Unemployment Recovery ↔ Sticky Inflation
 
   // Theoretical/simulation link
-  { id: 4, from: 2, to: 5 }, // Income Factors ↔ Game Theory (behavioral/social science overlap)
+  { id: 5, from: 3, to: 6 }, // Income Factors ↔ Game Theory (behavioral/social science overlap)
 
   // Optional: loop Polymarket into inflation (prediction market + macro)
-  { id: 5, from: 1, to: 4 }  // Polymarket ↔ Sticky Inflation
+  { id: 6, from: 1, to: 5 }  // Polymarket ↔ Sticky Inflation
 ]);
 
   // Network options
