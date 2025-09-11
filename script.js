@@ -219,7 +219,7 @@ function initGraph() {
     id: 2,
     label: "GARCH \nand \nStochastic \nVolatility",
     description: "Analysis of the theoretical and empirical gap between discrete models and continuous stochastic volatility frameworks.",
-    url: "https://github.com/hephtic/empty"
+    url: "https://github.com/hephtic/fin-time-series"
   },
   {
     id: 3,
