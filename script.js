@@ -217,7 +217,7 @@ function initGraph() {
   },
     {
     id: 2,
-    label: "GARCH \nand \nStochastic \nVolatility",
+    label: "GARCH \n& SV",
     description: "Analysis of the theoretical and empirical gap between discrete models and continuous stochastic volatility frameworks.",
     url: "https://github.com/hephtic/fin-time-series"
   },
@@ -229,7 +229,7 @@ function initGraph() {
   },
   {
     id: 4,
-    label: "Unemployment \nRecovery",
+    label: "UE \nRecovery",
     description: "Quantile regressions explore the role of education in U.S. county-level unemployment recovery after COVID.",
     url: "https://github.com/hephtic/unemployment-education-recovery-analysis"
   },
@@ -241,7 +241,7 @@ function initGraph() {
   },
   {
     id: 6,
-    label: "Game Theory \nSimulation",
+    label: "Game \nTheory \nSim",
     description: "Agent-based simulation of public goods games with punishment and mutation; identifies cooperation regimes.",
     url: "https://github.com/hephtic/game_theory"
   }
