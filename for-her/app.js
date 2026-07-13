@@ -748,37 +748,3 @@ reopenBtn.addEventListener('click', () => {
   letterPopup.classList.remove('hidden');
   reopenBtn.classList.add('hidden'); // Hide this button while reading
 });
-
-// =====================================
-// ✨ DOWNLOAD LETTER LOGIC ✨
-// =====================================
-
-document.getElementById('download-letter-btn').addEventListener('click', function() {
-  const popupElement = document.getElementById('letter-popup');
-  const footerButtons = document.querySelector('.letter-footer');
-  const originalBtnText = this.innerText;
-
-  // Change text to show it's working
-  this.innerText = "⏳ Saving...";
-
-  // 1. Temporarily hide the buttons so they aren't in the picture
-  footerButtons.style.opacity = '0';
-
-  // 2. Take the screenshot
-  html2canvas(popupElement, {
-    scale: 2, // Doubles the resolution so it looks crisp
-    useCORS: true, // Crucial: Allows it to capture external images (like Unsplash)
-    backgroundColor: '#111216' // Matches your dark background
-  }).then(canvas => {
-    
-    // 3. Create a fake link to trigger the download
-    const link = document.createElement('a');
-    link.download = 'Happy-Birthday-My-Love.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    // 4. Bring the buttons back
-    footerButtons.style.opacity = '1';
-    this.innerText = originalBtnText;
-  });
-});
