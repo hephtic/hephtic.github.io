@@ -14,7 +14,7 @@ body {
 #sidebar {
   width: 340px;
   background: #14161a;
-  border-right: 1px solid #1f2228;
+  border-right: 1px lid #1f2228;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -647,6 +647,7 @@ body {
 
 /* --- DOWNLOAD BUTTON --- */
 #download-letter-btn {
+  display: inline-block;
   background: transparent;
   color: #8a8479;
   border: none;
