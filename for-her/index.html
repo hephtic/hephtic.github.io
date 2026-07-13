@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Map</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="intro-screen">
+  <div class="intro-content">
+    <h1>Happy Birthday, Kira!!</h1>
+    <p>Here is a collection of some of our memories together.</p>
+    <button id="begin-btn">Begin</button>
+  </div>
+</div>
+
+<!-- 2. THE FINAL LETTER POPUP (Hidden by default) -->
+<div id="letter-popup" class="hidden">
+  <div class="letter-scene">
+    
+    <!-- The 4 Polaroid Images -->
+    <!-- Replace the src="..." with the actual paths to your images -->
+    <div class="polaroid p1"><img src="C:\Users\nicho\OneDrive\Documents\GitHub\testtt\IMG_0012.JPG" alt="Memory 1"></div>
+    <div class="polaroid p2"><img src="C:\Users\nicho\OneDrive\Documents\GitHub\testtt\IMG_6427.jpg" alt="Memory 2"></div>
+    <div class="polaroid p3"><img src="C:\Users\nicho\OneDrive\Documents\GitHub\testtt\IMG_6384.jpg" alt="Memory 3"></div>
+    <div class="polaroid p4"><img src="C:\Users\nicho\OneDrive\Documents\GitHub\testtt\IMG_0112.JPEG" alt="Memory 4"></div>
+
+    <!-- The Paper Letter -->
+    <div class="paper-letter">
+      <h2>To my love, 肖若宁,</h2>
+      <p>Happy 21st Birthday, Kira! I hope you enjoyed looking through some of our memories together (hopefully I didn't omit something significant lmk though). There are so many moments I wish that I could relive again and again. I love seeing you so happy about what I can do for you. I wish I could see you more often so I can see you happy and talk to you and simply enjoy being with you. I can't wait see you again and make more memories with you.</p>
+      <p>I'm so lucky to have you in my life, and I am glad of the person I am when I'm with you. You make me want to be the absolute best version that I can be. Thank you for being in my life and caring for me. I love you so so so much that words can't express how much I love you. I miss you so much.</p>
+      <p>I love every little aspect and trait about you. Everything you do, small and big, for me and everyone in your life. You are the most caring, kind, and cutest girlfriend I could ever ask for. Thank you for being you and loving me. 我真的很爱你。</p>
+
+      <p>Love,<br>Nick</p>
+
+      <div class="letter-footer">
+        <button id="download-letter-btn">Save to Desktop ➔</button>
+        <button id="close-letter-btn">Explore ➔</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar">
+    <div class="sidebar-content">
+      <div class="sidebar-header">
+        <h1>Memories</h1>
+        <p class="subtitle">A timeline of special moments</p>
+      </div>
+      <div id="timeline"></div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#686d76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      Made with memories
+    </div>
+  </div>
+
+  <div id="map-container">
+    <div id="map"></div>
+    <div class="memories-pill"></div>
+  </div>
+
+  <button id="skip-btn" class="hidden">Skip ➔</button>
+
+  <button id="next-story-btn" class="hidden">Next ➔</button>
+
+  <button id="reopen-letter-btn" class="hidden">Letter</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

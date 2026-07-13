@@ -1,0 +1,664 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #111216;
+  color: #e6e6e6;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 340px;
+  background: #14161a;
+  border-right: 1px solid #1f2228;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.sidebar-content {
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+
+.sidebar-header h1 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.subtitle {
+  color: #8a8f98;
+  font-size: 14px;
+  margin: 0 0 40px 0;
+}
+
+/* Timeline Layout */
+#timeline {
+  position: relative;
+  padding-left: 14px;
+}
+
+#timeline::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 0;
+  left: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timeline-entry {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -18px; /* Aligns with the vertical line */
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a78bfa;
+}
+
+.timeline-date {
+  color: #8a8f98;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* Memory Cards */
+.memory-card {
+  background: #1c1f24;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memory-card:hover {
+  background: #23272d;
+}
+
+.card-title {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+/* Update the existing card-desc to be hidden by default */
+.card-desc {
+  color: #8a8f98;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: 0;
+}
+
+/* Add styles for when the card is clicked/expanded */
+.memory-card.expanded .card-desc {
+  max-height: 350px; /* Adjust if your descriptions are very long */
+  opacity: 1;
+  margin-top: 8px;
+}
+
+/* Animate the chevron arrow */
+.chevron {
+  min-width: 16px;
+  margin-left: 12px;
+  transition: transform 0.3s ease;
+}
+
+.memory-card.expanded .chevron {
+  transform: rotate(180deg);
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 24px;
+  color: #686d76;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Map Area */
+#map-container {
+  flex: 1;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background: #111216;
+}
+
+/* Container for the whole pin */
+.custom-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Adds a realistic shadow under the entire pin */
+  filter: drop-shadow(0px 6px 8px rgba(0, 0, 0, 0.6));
+  cursor: pointer;
+}
+
+/* The Circle */
+.pin-circle {
+  width: 28px; /* Slightly larger for breathing room */
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(167, 139, 250, 0.4); /* Softer, semi-transparent border */
+  
+  /* Subtle dark gradient + glass effect */
+  background: linear-gradient(145deg, #1c1f24, #111216);
+  backdrop-filter: blur(4px);
+  
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  
+  /* Soft inner glow */
+  box-shadow: inset 0 0 8px rgba(167, 139, 250, 0.1);
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
+}
+
+/* The Line connecting to the map */
+.pin-line {
+  width: 2px;
+  height: 20px;
+  /* Fades from purple at the top to completely transparent at the bottom */
+  background: linear-gradient(to bottom, rgba(167, 139, 250, 0.8) 0%, rgba(167, 139, 250, 0) 100%);
+  margin-top: -1px; /* Pulls it under the circle slightly for a seamless connection */
+  z-index: 1;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Active / Hover States */
+.custom-pin.active .pin-circle {
+  background: #a78bfa; /* Full purple fill */
+  color: #111216; /* Dark text for contrast */
+  border-color: #a78bfa;
+  
+  /* Lifts the circle up slightly and gives it a heavy neon glow */
+  transform: translateY(-4px) scale(1.1); 
+  box-shadow: 0 4px 16px rgba(167, 139, 250, 0.5);
+}
+
+.custom-pin.active .pin-line {
+  /* Line stretches to maintain connection when the circle lifts up */
+  height: 24px; 
+  background: linear-gradient(to bottom, rgba(167, 139, 250, 1) 0%, rgba(167, 139, 250, 0) 100%);
+}
+
+/* Floating "3 memories" Pill */
+.memories-pill {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: #1c1f24;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Override Leaflet UI to match dark theme */
+.leaflet-control-zoom {
+  border: none !important;
+  margin-top: 24px !important;
+  margin-left: 24px !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: #14161a !important;
+  color: #a1a1a1 !important;
+  border: 1px solid #1f2228 !important;
+  border-radius: 6px !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin-bottom: 4px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #1f2228 !important;
+  color: #fff !important;
+}
+
+.leaflet-control-attribution {
+  background: #1c1f24 !important;
+  color: #686d76 !important;
+  border-radius: 20px;
+  padding: 4px 12px !important;
+  margin: 0 24px 24px 0 !important;
+}
+
+.leaflet-control-attribution a {
+  color: #686d76 !important;
+  text-decoration: none;
+}
+
+/* Active/Hover states for Map Pins */
+.custom-pin.active .pin-circle {
+  background-color: #a78bfa;
+  color: #111216; /* Dark text for contrast against the filled background */
+  transform: scale(1.1); /* Slight pop effect */
+  transition: all 0.2s ease;
+}
+
+.custom-pin.active .pin-line {
+  background-color: #ffffff;
+  width: 2px; /* Slightly thicker line */
+}
+
+/* Base transition for smooth hovering */
+.pin-circle, .pin-line {
+  transition: all 0.2s ease;
+}
+
+/* Active/Hover states for Sidebar Cards */
+.memory-card.active {
+  background: #2d333b; /* Noticeably lighter than default */
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px); /* Slight nudge to the right */
+}
+
+/* Smooth transition for the card */
+.memory-card {
+  transition: all 0.2s ease;
+}
+
+/* Animation for the day's tracked path */
+.animated-path {
+  stroke-dasharray: 8 16; /* Made the gaps slightly wider so it looks cleaner */
+  animation: march 40s linear infinite; /* Increased to 40s to slow it down */
+}
+
+@keyframes march {
+  to { stroke-dashoffset: -1000; }
+}
+
+/* Custom Scrollbar for Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px; /* Makes it nice and thin */
+  height: 6px; 
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Blends perfectly into your dark sidebar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b424d; /* A subtle dark gray */
+  border-radius: 10px; /* Soft, rounded edges */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a6472; /* Slightly lighter when hovered for feedback */
+}
+
+/* Custom Scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3b424d transparent;
+}
+
+#intro-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #111216; /* Matches your dark theme perfectly */
+  z-index: 99999; /* Ensures it sits above the map and sidebar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* Fades the screen out when JS adds this class */
+#intro-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.intro-content {
+  text-align: center;
+  animation: fadeInUp 1s ease forwards;
+}
+
+.intro-content h1 {
+  font-size: 48px;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.intro-content p {
+  color: #8a8f98;
+  font-size: 18px;
+  margin: 0 0 40px 0;
+}
+
+#begin-btn {
+  background: transparent;
+  color: #a78bfa;
+  border: 1px solid #a78bfa;
+  padding: 14px 36px;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+#begin-btn:hover {
+  background: #a78bfa;
+  color: #111216;
+  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Simple animation for the text loading in */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================
+   STORY MODE & LETTER POPUP STYLES
+   ========================================= */
+
+/* Hides items initially so they can fade in one by one */
+.story-hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* ✨ FIX: Apply the slide animation ONLY to the sidebar, NOT the map pins */
+.timeline-entry.story-hidden {
+  transform: translateY(15px);
+}
+
+.timeline-entry {
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Map pins only use opacity so we don't break Leaflet's positioning */
+.custom-leaflet-marker {
+  transition: opacity 0.8s ease;
+}
+
+/* =========================================
+   THE PAPER LETTER & POLAROIDS
+   ========================================= */
+
+#letter-popup {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100vh;
+  background: rgba(17, 18, 22, 0.95);
+  z-index: 99999; 
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  backdrop-filter: blur(8px);
+}
+
+#letter-popup.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.letter-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- THE PAPER LETTER --- */
+.paper-letter {
+  background: #fdfaf6; /* Warm off-white paper color */
+  color: #2c2a25; /* Dark ink color */
+  padding: 50px 60px;
+  max-width: 650px;
+  border-radius: 2px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 40px rgba(200, 190, 180, 0.1);
+  position: relative;
+  z-index: 10;
+  font-family: 'Georgia', serif; /* Classic, romantic serif font */
+  line-height: 1.8;
+  text-align: left;
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+#letter-popup:not(.hidden) .paper-letter {
+  animation: paperFadeUp 1s 0.2s ease forwards;
+}
+
+.paper-letter h2 {
+  font-size: 24px;
+  margin: 0 0 12px 0;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.paper-letter p {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+}
+
+.letter-footer {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row; /* Forces items onto the same line */
+  justify-content: space-between; /* Pushes left and right */
+  align-items: center; /* Keeps them vertically aligned */
+  width: 100%;
+}
+
+/* Minimalist "Next" button on the paper */
+#close-letter-btn {
+  background: transparent;
+  color: #5a554c;
+  border: 1px solid #d4cec4;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-family: inherit;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#close-letter-btn:hover {
+  background: #f0ebe1;
+  color: #111;
+  border-color: #b8b1a6;
+}
+
+/* --- THE POLAROIDS --- */
+.polaroid {
+  background: #ffffff;
+  padding: 12px 12px 45px 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  position: absolute;
+  z-index: 5; /* Sits directly behind the letter */
+  opacity: 0;
+}
+
+.polaroid img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  background: #eeeeee;
+  border: 1px solid #f5f5f5;
+}
+
+/* Polaroid Positioning & Animations */
+/* They start hidden behind the letter, then pop out at different angles */
+.p1 { top: 15%; left: 0; }
+.p2 { top: 10%; right: 0; }
+.p3 { bottom: 15%; left: 0; }
+.p4 { bottom: 10%; right: 0; }
+
+#letter-popup:not(.hidden) .p1 { animation: popOut1 0.6s 1.0s cubic-bezier(0.2, 0.8, 0.2, 1.15) forwards; }
+#letter-popup:not(.hidden) .p2 { animation: popOut2 0.6s 1.2s cubic-bezier(0.2, 0.8, 0.2, 1.15) forwards; }
+#letter-popup:not(.hidden) .p3 { animation: popOut3 0.6s 1.4s cubic-bezier(0.2, 0.8, 0.2, 1.15) forwards; }
+#letter-popup:not(.hidden) .p4 { animation: popOut4 0.6s 1.6s cubic-bezier(0.2, 0.8, 0.2, 1.15) forwards; }
+
+/* Keyframes */
+@keyframes paperFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popOut1 {
+  to { opacity: 1; transform: translate(-200px, -45px) rotate(-12deg); }
+}
+@keyframes popOut2 {
+  to { opacity: 1; transform: translate(180px, -40px) rotate(8deg); }
+}
+@keyframes popOut3 {
+  to { opacity: 1; transform: translate(-190px, 40px) rotate(-6deg); }
+}
+@keyframes popOut4 {
+  to { opacity: 1; transform: translate(180px, 45px) rotate(14deg); }
+}
+
+#skip-btn {
+  position: absolute;
+  bottom: 120px;
+  right: 32px; /* Positions it to the above of the Next button */
+  z-index: 90000;
+  background: #1c1f24;
+  color: #8a8f98;
+  border: 1px solid #3b424d;
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#skip-btn:hover {
+  background: #2d333b;
+  color: #e6e6e6;
+  border-color: #a78bfa;
+}
+
+#skip-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- STORY MODE CONTROLS --- */
+#next-story-btn {
+  position: absolute;
+  bottom: 64px;
+  right: 32px;
+  z-index: 90000;
+  background: #a78bfa;
+  color: #111216;
+  border: none;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.5s ease, transform 0.3s ease;
+}
+
+#next-story-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.5);
+}
+
+#next-story-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- REOPEN LETTER BUTTON --- */
+#reopen-letter-btn {
+  position: absolute;
+  bottom: 64px;
+  right: 32px;
+  z-index: 90000;
+  background: #1c1f24;
+  color: #a78bfa;
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+#reopen-letter-btn:hover {
+  background: #23272d;
+  border-color: #a78bfa;
+  transform: translateY(-2px);
+}
+
+#reopen-letter-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- DOWNLOAD BUTTON --- */
+#download-letter-btn {
+  background: transparent;
+  color: #8a8479;
+  border: none;
+  padding: 10px 0; /* Adjusted padding since it's on the edge now */
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+#download-letter-btn:hover {
+  color: #111;
+}
