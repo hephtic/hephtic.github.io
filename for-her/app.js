@@ -150,7 +150,7 @@ const memories = [
     city: "La Jolla",
     rawDate: "2026-03-09",
     lat: 32.88693843161802, lng: -117.24221471771367,
-    description: "This one is one of my favorite memories and yours too. We walked along La Jolla Cove, and you were so excited about the seals on the beach. We got dinner at The Spot and then got gelato after. And then we went all the way back the the balcony on Rady where we became official. I'm so happy you said yes :) Oh these memories are so special to me. I love seeing you happy especially during this night. I love you so much.",
+    description: "This one is one of my favorite memories and yours too. We walked along La Jolla Cove, and you were so excited about the seals on the beach. We got dinner at The Spot and then got gelato after. And then we went all the way back the the balcony on Rady where we became official. I'm so happy you said yes :) Oh that feeling when we were walking back to your apartment after. We were both so happy. Oh these memories are so special to me. I love seeing you happy especially during this night. I love you so much.",
     pathCoords: [
       [32.875533945294286, -117.24372273940914],
       [32.86927224237564, -117.24874873434484],
@@ -181,7 +181,7 @@ const memories = [
     city: "UCSD",
     rawDate: "2026-03-14",
     lat: 32.87797416705165, lng: -117.22999964808494,
-    description: "It was a lock in session for finals week where we studied in the upstairs of Price Center. On our way back to your apartment, we had our first kisses hehe :)  I didn't know how hard I could fall for you. Very special moments and memories.",
+    description: "It was a lock in session for finals week where we studied in the upstairs of Price Center. On our way back to your apartment, we had our first kisses hehe :)  I didn't know how hard I could fall for you. I didn't know I could love this hard. The butterflies in my stomach, the way you made me feel.",
     pathCoords: [
       [32.879703118381585, -117.23611219904387],
       [32.879492102634416, -117.23451724263674],
@@ -336,7 +336,7 @@ const memories = [
     city: "UCSD",
     rawDate: "2026-05-23",
     lat: 32.87460922658291, lng: -117.24097132397424,
-    description: "Where we were able to run a 5k together for the first time. You didn't think I could like actually run when I did it for like 6+ years smh lol. I was able to get second but the more memorable part of the experience was being there with you :) cutie",
+    description: "Where we were able to run a 5k together for the first time. You didn't think I could like actually run when I did it for like 6+ years smh lol. I was able to get second but the more memorable part of the experience was being there with you :)",
     pathCoords: [
       [32.87460922658291, -117.24097132397424]
     ],
